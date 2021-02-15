@@ -445,13 +445,62 @@ ssamese, Bangla, Bodo, Dogri, Gujarati, Hindi, Kashmiri, Kannada, Konkani, Maith
                               ),
                             ],
                           ),
-                           TextFormField(
-                                    textAlign: TextAlign.justify,
-                                    decoration: InputDecoration(
-                                      labelText: 'Weekly Viewers (optional)',
-                                      labelStyle: TextStyle(
-                                          color: CupertinoColors.activeOrange),
+                          SizedBox(height: 30),
+                          TextFormField(
+                            textAlign: TextAlign.justify,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'Weekly Viewers (optional)',
+                              labelStyle: TextStyle(
+                                  color: CupertinoColors.activeOrange),
+                            ),
+                          ),
+                          SizedBox(height: 30),
+                          TextFormField(
+                            textAlign: TextAlign.justify,
+                            keyboardType: TextInputType.streetAddress,
+                            decoration: InputDecoration(
+                              labelText: 'Address',
+                              labelStyle: TextStyle(
+                                  color: CupertinoColors.activeOrange),
+                            ),
+                          ),
+                          SizedBox(height: 30),
+                          CupertinoButton(
+                            color: CupertinoColors.activeBlue,
+                            child: Text("Create Account"),
+                            onPressed: () {
+                              showCupertinoDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) =>
+                                    CupertinoAlertDialog(
+                                  title: Text(
+                                      'you need to verify your Email and Phone to create Account'),
+                                  content: Text("Do you accept?"),
+                                  actions: [
+                                    CupertinoDialogAction(
+                                      child: Text(
+                                        'Yes',
+                                        style: TextStyle(
+                                            color: CupertinoColors.activeBlue),
+                                      ),
                                     ),
+                                    CupertinoDialogAction(
+                                      child: Text(
+                                        'No',
+                                        style: TextStyle(
+                                            color: CupertinoColors.systemRed),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pop(context, false);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),
