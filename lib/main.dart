@@ -35,17 +35,15 @@ class MainScreen extends StatelessWidget {
         backgroundColor: CupertinoColors.extraLightBackgroundGray,
       ),
       body: Container(
+        constraints: BoxConstraints.expand(),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/images/wind_mill.jpg'),
+              fit: BoxFit.cover),
+        ),
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Container(
-              constraints: BoxConstraints.expand(),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/images/wind_mill.jpg'),
-                    fit: BoxFit.cover),
-              ),
-            ),
             Center(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),

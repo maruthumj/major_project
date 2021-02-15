@@ -21,9 +21,15 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  
+  firebase_core: ^0.4.0+9
+  firebase_analytics: ^5.0.2
+  firebase_auth: ^0.14.0+5
+  cloud_firestore: ^0.12.9+5
+  dependencies:
   flutter:
     sdk: flutter
+  
+  
     
 
   # The following adds the Cupertino Icons font to your application.
@@ -45,6 +51,8 @@ flutter:
     - assets/images/wind_mill.jpg
     - assets/images/person_badge_plus.png
     - assets/images/plus_logo.png
+    - assets/images/ios_sea.jpg
+    
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
