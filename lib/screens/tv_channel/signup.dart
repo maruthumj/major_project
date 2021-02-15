@@ -11,6 +11,10 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   final GlobalKey<FormState> _formkey = GlobalKey();
+  int selected = 0;
+  int selected1 = 0;
+  bool _lights = false;
+
   TextEditingController _passwordController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -52,7 +56,7 @@ class _SignupState extends State<Signup> {
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                   child: Container(
-                    height: 800,
+                    height: 2000,
                     width: 500,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade400.withOpacity(0.5),
@@ -66,11 +70,20 @@ class _SignupState extends State<Signup> {
                           Text(
                             "Account Details",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                              color: CupertinoColors.activeBlue,
+                              decorationColor: Colors.blue,
+                              fontSize: 18,
+                              decorationThickness: 4,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           TextFormField(
-                            decoration: InputDecoration(labelText: "Email"),
+                            decoration: InputDecoration(
+                                labelText: "Email",
+                                labelStyle: TextStyle(
+                                    color: CupertinoColors.activeGreen)),
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value.isEmpty || !value.contains('@')) {
@@ -81,13 +94,19 @@ class _SignupState extends State<Signup> {
                             onSaved: (value) {},
                           ),
                           TextFormField(
-                            decoration:
-                                InputDecoration(labelText: 'Phone Number'),
+                            decoration: InputDecoration(
+                                labelText: 'Phone Number',
+                                labelStyle: TextStyle(
+                                    color: CupertinoColors.activeGreen)),
                             obscureText: true,
                             keyboardType: TextInputType.phone,
                           ),
                           TextFormField(
-                            decoration: InputDecoration(labelText: 'password'),
+                            decoration: InputDecoration(
+                              labelText: 'password',
+                              labelStyle:
+                                  TextStyle(color: CupertinoColors.activeGreen),
+                            ),
                             obscureText: true,
                             controller: _passwordController,
                             validator: (value) {
@@ -100,8 +119,11 @@ class _SignupState extends State<Signup> {
                             onSaved: (value) {},
                           ),
                           TextFormField(
-                            decoration:
-                                InputDecoration(labelText: 'Confirm Password'),
+                            decoration: InputDecoration(
+                              labelText: 'Confirm Password',
+                              labelStyle:
+                                  TextStyle(color: CupertinoColors.activeGreen),
+                            ),
                             obscureText: true,
                             controller: _passwordController,
                             validator: (value) {
@@ -117,60 +139,319 @@ class _SignupState extends State<Signup> {
                           Text(
                             "Channel Details",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                                fontSize: 20,
+                                decorationColor: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                                color: CupertinoColors.activeBlue,
+                                decorationThickness: 4,
+                                decoration: TextDecoration.underline),
                             textAlign: TextAlign.center,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Container(
-                                width: 80.0,
-                                height: 80.0,
+                                width: 70.0,
+                                height: 70.0,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  image: DecorationImage(
+                                  image: new DecorationImage(
                                     fit: BoxFit.fill,
                                     image: AssetImage(
                                         'assets/images/plus_logo.png'),
                                   ),
                                 ),
                               ),
-                              TextFormField(
-                                decoration:
-                                    InputDecoration(labelText: 'Phone Number'),
-                                obscureText: true,
-                                keyboardType: TextInputType.phone,
-                              ),
-                              TextFormField(
-                                decoration:
-                                    InputDecoration(labelText: 'password'),
-                                obscureText: true,
-                                controller: _passwordController,
-                                validator: (value) {
-                                  if (value.isEmpty ||
-                                      value != _passwordController.text) {
-                                    return 'Invalid Password';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) {},
-                              ),
-                              TextFormField(
-                                decoration: InputDecoration(
-                                    labelText: 'Confirm Password'),
-                                obscureText: true,
-                                controller: _passwordController,
-                                validator: (value) {
-                                  if (value.isEmpty ||
-                                      value != _passwordController.text) {
-                                    return 'Invalid Password';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) {},
+                              Container(
+                                width: 250,
+                                child: TextFormField(
+                                    textAlign: TextAlign.justify,
+                                    decoration: InputDecoration(
+                                      labelText: 'Channel Name',
+                                      labelStyle: TextStyle(
+                                          color: CupertinoColors.activeOrange),
+                                    ),
+                                    obscureText: true,
+                                    keyboardType: TextInputType.name),
                               ),
                             ],
-                          )
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "     Logo",
+                                style: TextStyle(
+                                    color: CupertinoColors.activeOrange),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              TextFormField(
+                                textAlign: TextAlign.start,
+                                minLines: 1,
+                                maxLines: 5,
+                                decoration: InputDecoration(
+                                  labelText: 'Description',
+                                  labelStyle: TextStyle(
+                                      color: CupertinoColors.activeOrange),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Language",
+                                    style: TextStyle(
+                                      color: CupertinoColors.activeOrange,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                width: double.infinity,
+                                height: 150,
+                                child: CupertinoPicker(
+                                  itemExtent: 50,
+                                  onSelectedItemChanged: (int i) {
+                                    print(i);
+                                    setState(() {
+                                      selected = i;
+                                    });
+                                  },
+                                  children: [
+                                    Text(
+                                      "Tamil",
+                                      style: TextStyle(
+                                          color: selected == 0
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Telugu",
+                                      style: TextStyle(
+                                          color: selected == 1
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Malayalam",
+                                      style: TextStyle(
+                                          color: selected == 2
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Kannada",
+                                      style: TextStyle(
+                                          color: selected == 3
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Bangla",
+                                      style: TextStyle(
+                                          color: selected == 4
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Gujarati",
+                                      style: TextStyle(
+                                          color: selected == 5
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Hindi",
+                                      style: TextStyle(
+                                          color: selected == 6
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Kashmiri",
+                                      style: TextStyle(
+                                          color: selected == 7
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Marathi",
+                                      style: TextStyle(
+                                          color: selected == 8
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Punjabi",
+                                      style: TextStyle(
+                                          color: selected == 9
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Urdu",
+                                      style: TextStyle(
+                                          color: selected == 10
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "English",
+                                      style: TextStyle(
+                                          color: selected == 11
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Other",
+                                      style: TextStyle(
+                                          color: selected == 12
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+
+/*
+ssamese, Bangla, Bodo, Dogri, Gujarati, Hindi, Kashmiri, Kannada, Konkani, Maithili, Malayalam, Manipuri, Marathi, Nepali, Oriya, Punjabi, Tamil, Telugu, Santali, Sindhi, and Urdu
+*/
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Category",
+                                    style: TextStyle(
+                                        color: CupertinoColors.activeOrange,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                width: double.infinity,
+                                height: 150,
+                                child: CupertinoPicker(
+                                  itemExtent: 50,
+                                  onSelectedItemChanged: (int i) {
+                                    print(i);
+                                    setState(() {
+                                      selected1 = i;
+                                    });
+                                  },
+                                  children: [
+                                    Text(
+                                      "Knowledge and Lifestyle",
+                                      style: TextStyle(
+                                          color: selected1 == 0
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Music",
+                                      style: TextStyle(
+                                          color: selected1 == 1
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "News",
+                                      style: TextStyle(
+                                          color: selected1 == 2
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Entertainment",
+                                      style: TextStyle(
+                                          color: selected1 == 3
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Movies",
+                                      style: TextStyle(
+                                          color: selected1 == 4
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Comedy",
+                                      style: TextStyle(
+                                          color: selected1 == 5
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Spiritual",
+                                      style: TextStyle(
+                                          color: selected1 == 6
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Sports",
+                                      style: TextStyle(
+                                          color: selected1 == 7
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Kids",
+                                      style: TextStyle(
+                                          color: selected1 == 8
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                    Text(
+                                      "Others",
+                                      style: TextStyle(
+                                          color: selected1 == 9
+                                              ? CupertinoColors.activeBlue
+                                              : CupertinoColors.black),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              MergeSemantics(
+                                child: ListTile(
+                                  title: Text(
+                                    'Supports Featured Ads?(Real Estate/Telecom)',
+                                    style: TextStyle(
+                                      color: CupertinoColors.activeOrange,
+                                    ),
+                                  ),
+                                  trailing: CupertinoSwitch(
+                                    value: _lights,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        _lights = value;
+                                      });
+                                    },
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      _lights = !_lights;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                           TextFormField(
+                                    textAlign: TextAlign.justify,
+                                    decoration: InputDecoration(
+                                      labelText: 'Weekly Viewers (optional)',
+                                      labelStyle: TextStyle(
+                                          color: CupertinoColors.activeOrange),
+                                    ),
                         ],
                       ),
                     ),
@@ -184,6 +465,7 @@ class _SignupState extends State<Signup> {
     );
   }
 }
+
 /*
 
  SizedBox(height: 30),
