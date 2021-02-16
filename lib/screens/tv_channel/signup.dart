@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:ui';
 
 class Signup extends StatefulWidget {
@@ -13,14 +14,29 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   final GlobalKey<FormState> _formkey = GlobalKey();
-
+  TextEditingController _emailController = new TextEditingController();
+  TextEditingController _nameController = new TextEditingController();
+  TextEditingController _channel_nameController = new TextEditingController();
+  TextEditingController _phoneController = new TextEditingController();
+  TextEditingController _descController = new TextEditingController();
+  TextEditingController _passwordController = new TextEditingController();
+  TextEditingController _categoryController = new TextEditingController();
   int selected = 0;
   int selected1 = 0;
   bool _lights = false;
+  final _auth = FirebaseAuth.instance;
 
-  TextEditingController _passwordController = new TextEditingController();
+  bool showProgress = false;
+
   @override
   Widget build(BuildContext context) {
+    CollectionReference users_details =
+        Firestore.instance.collection("tv_channel_details");
+
+    Future<void> addUser() {
+      return users_details.add({});
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -163,7 +179,10 @@ class _SignupState extends State<Signup> {
                                 Container(
                                   width: 250,
                                   child: TextFormField(
+                                      controller: _channel_nameController,
                                       textAlign: TextAlign.justify,
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
                                       decoration: InputDecoration(
                                         labelText: 'Channel Name',
                                         labelStyle: TextStyle(
@@ -220,6 +239,9 @@ class _SignupState extends State<Signup> {
                                   width: double.infinity,
                                   height: 150,
                                   child: CupertinoPicker(
+                                    scrollController:
+                                        FixedExtentScrollController(
+                                            initialItem: 1),
                                     itemExtent: 50,
                                     onSelectedItemChanged: (int i) {
                                       print(i);
@@ -320,7 +342,7 @@ class _SignupState extends State<Signup> {
                                                 : CupertinoColors.black),
                                       ),
 
-/*
+/*                                 
 ssamese, Bangla, Bodo, Dogri, Gujarati, Hindi, Kashmiri, Kannada, Konkani, Maithili, Malayalam, Manipuri, Marathi, Nepali, Oriya, Punjabi, Tamil, Telugu, Santali, Sindhi, and Urdu
 */
                                     ],
