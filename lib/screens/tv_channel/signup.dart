@@ -3,8 +3,10 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:major_project/screens/tv_channel/loginscreen.dart';
 
 class Signup extends StatefulWidget {
   Signup({Key key}) : super(key: key);
@@ -15,7 +17,11 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   final GlobalKey<FormState> _formkey = GlobalKey();
+
+  FirebaseAuth auth = FirebaseAuth.instance;
   TextEditingController _emailController = new TextEditingController();
+  TextEditingController _weeklyviewers = new TextEditingController();
+  TextEditingController _addressController = new TextEditingController();
   TextEditingController _nameController = new TextEditingController();
   TextEditingController _channel_nameController = new TextEditingController();
   TextEditingController _phoneController = new TextEditingController();
@@ -25,8 +31,14 @@ class _SignupState extends State<Signup> {
   int selected = 0;
   int selected1 = 0;
   bool _lights = false;
-  String val, lang_name;
+  String val, lang_name, val1, category_name;
   final _auth = FirebaseAuth.instance;
+
+  getUID() async {
+    final FirebaseUser user = await auth.currentUser();
+    final uid = user.uid;
+    return uid;
+  }
 
   bool showProgress = false;
 
@@ -46,8 +58,33 @@ class _SignupState extends State<Signup> {
     "Kashmiri",
     "Assame",
   ];
+  List<String> category = [
+    "Knowledge and Lifestyle",
+    "music",
+    "news",
+    "Entertainement",
+    "Movies",
+    "Comedy",
+    "Spiritual",
+    "Sports",
+    "kids",
+    "Others"
+  ];
 
-  List<DropdownMenuItem> getmenuItem() {
+  List<DropdownMenuItem> getmenuItem1() {
+    List<DropdownMenuItem> list1 = [];
+    for (String value1 in category) {
+      list1.add(DropdownMenuItem(
+        child: Text(
+          value1,
+          style: TextStyle(color: CupertinoColors.activeBlue),
+        ),
+        value: value1,
+      ));
+    }
+  }
+
+  /* List<DropdownMenuItem> getmenuItem() {
     List<DropdownMenuItem> list = [];
     for (String value in languages) {
       list.add(DropdownMenuItem(
@@ -58,7 +95,7 @@ class _SignupState extends State<Signup> {
         value: value,
       ));
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +107,7 @@ class _SignupState extends State<Signup> {
           .setData({
             'channel name': _channel_nameController.text,
             'language': lang_name,
+            'category': category_name,
           })
           .then((value) => print("channel added"))
           .catchError((error) => print("Failed to create channel: $error"));
@@ -77,18 +115,6 @@ class _SignupState extends State<Signup> {
 
     CollectionReference user_details =
         Firestore.instance.collection("tv_account_details");
-
-    Future<void> addUser() {
-      if (_emailController != null && _phoneController != null) {
-        return user_details
-            .add({
-              'email': _emailController.text,
-              'phone': _phoneController.text,
-            })
-            .then((value) => print("User Added"))
-            .catchError((error) => print("Failed to add user: $error"));
-      }
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -124,7 +150,7 @@ class _SignupState extends State<Signup> {
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                     child: Container(
-                      height: 1300,
+                      height: 1500,
                       width: 500,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade400.withOpacity(0.5),
@@ -167,7 +193,6 @@ class _SignupState extends State<Signup> {
                                   labelText: 'Phone Number',
                                   labelStyle:
                                       TextStyle(color: CupertinoColors.black)),
-                              obscureText: true,
                               keyboardType: TextInputType.phone,
                             ),
                             TextFormField(
@@ -178,14 +203,14 @@ class _SignupState extends State<Signup> {
                               ),
                               obscureText: true,
                               controller: _passwordController,
-                              validator: (value) {
-                                if (value.isEmpty ||
-                                    value != _passwordController.text) {
+                              validator: (value2) {
+                                if (value2.isEmpty ||
+                                    value2 != _passwordController.text) {
                                   return 'Invalid Password';
                                 }
                                 return null;
                               },
-                              onSaved: (value) {},
+                              onSaved: (value2) {},
                             ),
                             TextFormField(
                               decoration: InputDecoration(
@@ -245,7 +270,6 @@ class _SignupState extends State<Signup> {
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20),
                                       ),
-                                      obscureText: true,
                                       keyboardType: TextInputType.name),
                                 ),
                               ],
@@ -300,7 +324,7 @@ class _SignupState extends State<Signup> {
                                     itemExtent: 50,
                                     onSelectedItemChanged: (value) {
                                       lang_name = languages[value];
-                                      print(languages[value]);
+                                      print(lang_name);
                                       setState(() {
                                         selected = value;
                                       });
@@ -328,10 +352,6 @@ class _SignupState extends State<Signup> {
                                                 : CupertinoColors.black),
                                           ),
                                         ),
-
-/*                                 
-ssamese, Bangla, Bodo, Dogri, Gujarati, Hindi, Kashmiri, Kannada, Konkani, Maithili, Malayalam, Manipuri, Marathi, Nepali, Oriya, Punjabi, Tamil, Telugu, Santali, Sindhi, and Urdu
-*/
                                     ],
                                   ),
                                 ),
@@ -353,83 +373,21 @@ ssamese, Bangla, Bodo, Dogri, Gujarati, Hindi, Kashmiri, Kannada, Konkani, Maith
                                   height: 150,
                                   child: CupertinoPicker(
                                     itemExtent: 50,
-                                    onSelectedItemChanged: (int i) {
-                                      print(i);
+                                    onSelectedItemChanged: (value1) {
+                                      category_name = category[value1];
+                                      print(category_name);
                                       setState(() {
-                                        selected1 = i;
+                                        selected1 = value1;
                                       });
                                     },
                                     children: [
-                                      Text(
-                                        "Knowledge and Lifestyle",
-                                        style: TextStyle(
-                                            color: selected1 == 0
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Music",
-                                        style: TextStyle(
-                                            color: selected1 == 1
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "News",
-                                        style: TextStyle(
-                                            color: selected1 == 2
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Entertainment",
-                                        style: TextStyle(
-                                            color: selected1 == 3
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Movies",
-                                        style: TextStyle(
-                                            color: selected1 == 4
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Comedy",
-                                        style: TextStyle(
-                                            color: selected1 == 5
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Spiritual",
-                                        style: TextStyle(
-                                            color: selected1 == 6
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Sports",
-                                        style: TextStyle(
-                                            color: selected1 == 7
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Kids",
-                                        style: TextStyle(
-                                            color: selected1 == 8
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Others",
-                                        style: TextStyle(
-                                            color: selected1 == 9
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
+                                      for (val1 in category)
+                                        Text(
+                                          val1,
+                                          style: TextStyle(
+                                            color: (CupertinoColors.activeBlue),
+                                          ),
+                                        ),
                                     ],
                                   ),
                                 ),
@@ -461,6 +419,7 @@ ssamese, Bangla, Bodo, Dogri, Gujarati, Hindi, Kashmiri, Kannada, Konkani, Maith
                             ),
                             SizedBox(height: 30),
                             TextFormField(
+                              controller: _weeklyviewers,
                               textAlign: TextAlign.justify,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
@@ -473,6 +432,7 @@ ssamese, Bangla, Bodo, Dogri, Gujarati, Hindi, Kashmiri, Kannada, Konkani, Maith
                             ),
                             SizedBox(height: 30),
                             TextFormField(
+                              controller: _addressController,
                               textAlign: TextAlign.justify,
                               keyboardType: TextInputType.streetAddress,
                               decoration: InputDecoration(
@@ -504,7 +464,40 @@ ssamese, Bangla, Bodo, Dogri, Gujarati, Hindi, Kashmiri, Kannada, Konkani, Maith
                                                   CupertinoColors.activeBlue),
                                         ),
                                         onPressed: () {
-                                          addUser();
+                                          auth.createUserWithEmailAndPassword(
+                                              email: _emailController.text,
+                                              password:
+                                                  _passwordController.text);
+                                          Future<void> addUser() {
+                                            if (_emailController != null &&
+                                                _phoneController != null) {
+                                              return user_details
+                                                  .document(getUID())
+                                                  .setData({
+                                                'email': _emailController.text,
+                                                'phone': _phoneController.text,
+                                              }).then((value) {
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        "User Created Successfully",
+                                                    toastLength:
+                                                        Toast.LENGTH_SHORT,
+                                                    gravity:
+                                                        ToastGravity.CENTER,
+                                                    timeInSecForIosWeb: 1,
+                                                    backgroundColor: CupertinoColors
+                                                        .extraLightBackgroundGray,
+                                                    textColor: CupertinoColors
+                                                        .systemRed,
+                                                    fontSize: 16.0);
+                                                print("User Added");
+                                              }).catchError((error) {
+                                                print(
+                                                    "Failed to add user: $error");
+                                              });
+                                            }
+                                          }
+
                                           addChannel();
                                         },
                                       ),
@@ -523,6 +516,30 @@ ssamese, Bangla, Bodo, Dogri, Gujarati, Hindi, Kashmiri, Kannada, Konkani, Maith
                                 );
                               },
                             ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(height: 10),
+                                Text(
+                                  "Already Have an Account?",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: CupertinoColors.black),
+                                ),
+                                CupertinoButton(
+                                  child: Text("Log In",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                LoginScreen()));
+                                  },
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
@@ -540,36 +557,5 @@ ssamese, Bangla, Bodo, Dogri, Gujarati, Hindi, Kashmiri, Kannada, Konkani, Maith
 
 /*
 
- SizedBox(height: 30),
-                          CupertinoButton(
-                            child: Text(
-                              "SignUp",
-                            ),
-                            color: CupertinoColors.activeBlue,
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Signup()));
-                            },
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(height: 10),
-                              Text(
-                                "Already Have an Account?",
-                                style: TextStyle(
-                                    fontSize: 15, color: CupertinoColors.black),
-                              ),
-                              CupertinoButton(
-                                child: Text("Log In",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold)),
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => Signup()));
-                                },
-                              ),
-                            ],
-                          ),
-
+ 
 */

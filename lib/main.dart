@@ -64,7 +64,7 @@ class MainScreen extends StatelessWidget {
                           child: Text("Advertiser's Login"),
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => Ad_Login()));
+                                builder: (context) => ad_LoginScreen()));
                           },
                         ),
                         SizedBox(height: 30),
