@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:ui';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class Signup extends StatefulWidget {
   Signup({Key key}) : super(key: key);
@@ -24,17 +25,69 @@ class _SignupState extends State<Signup> {
   int selected = 0;
   int selected1 = 0;
   bool _lights = false;
+  String val, lang_name;
   final _auth = FirebaseAuth.instance;
 
   bool showProgress = false;
 
+  List<String> languages = [
+    "Tamil",
+    "Telugu",
+    "Malayalam",
+    "Kannada",
+    "Gujarati",
+    "Hindi",
+    "Bangla",
+    "Kashmiri",
+    "Marathi",
+    "Gujarati",
+    "Punjabi",
+    "Urdu",
+    "Kashmiri",
+    "Assame",
+  ];
+
+  List<DropdownMenuItem> getmenuItem() {
+    List<DropdownMenuItem> list = [];
+    for (String value in languages) {
+      list.add(DropdownMenuItem(
+        child: Text(
+          value,
+          style: TextStyle(color: CupertinoColors.activeBlue),
+        ),
+        value: value,
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    CollectionReference users_details =
+    CollectionReference channel_details =
         Firestore.instance.collection("tv_channel_details");
+    Future<void> addChannel() {
+      return channel_details
+          .document()
+          .setData({
+            'channel name': _channel_nameController.text,
+            'language': lang_name,
+          })
+          .then((value) => print("channel added"))
+          .catchError((error) => print("Failed to create channel: $error"));
+    }
+
+    CollectionReference user_details =
+        Firestore.instance.collection("tv_account_details");
 
     Future<void> addUser() {
-      return users_details.add({});
+      if (_emailController != null && _phoneController != null) {
+        return user_details
+            .add({
+              'email': _emailController.text,
+              'phone': _phoneController.text,
+            })
+            .then((value) => print("User Added"))
+            .catchError((error) => print("Failed to add user: $error"));
+      }
     }
 
     return Scaffold(
@@ -94,6 +147,7 @@ class _SignupState extends State<Signup> {
                               textAlign: TextAlign.center,
                             ),
                             TextFormField(
+                              controller: _emailController,
                               decoration: InputDecoration(
                                   labelText: "Email",
                                   labelStyle:
@@ -108,6 +162,7 @@ class _SignupState extends State<Signup> {
                               onSaved: (value) {},
                             ),
                             TextFormField(
+                              controller: _phoneController,
                               decoration: InputDecoration(
                                   labelText: 'Phone Number',
                                   labelStyle:
@@ -243,104 +298,36 @@ class _SignupState extends State<Signup> {
                                         FixedExtentScrollController(
                                             initialItem: 1),
                                     itemExtent: 50,
-                                    onSelectedItemChanged: (int i) {
-                                      print(i);
+                                    onSelectedItemChanged: (value) {
+                                      lang_name = languages[value];
+                                      print(languages[value]);
                                       setState(() {
-                                        selected = i;
+                                        selected = value;
                                       });
                                     },
                                     children: [
-                                      Text(
-                                        "Tamil",
-                                        style: TextStyle(
-                                            color: selected == 0
+                                      for (val in languages)
+                                        Text(
+                                          val,
+                                          style: TextStyle(
+                                            color: (selected == 0 ||
+                                                    selected == 1 ||
+                                                    selected == 2 ||
+                                                    selected == 3 ||
+                                                    selected == 4 ||
+                                                    selected == 5 ||
+                                                    selected == 6 ||
+                                                    selected == 7 ||
+                                                    selected == 8 ||
+                                                    selected == 9 ||
+                                                    selected == 10 ||
+                                                    selected == 11 ||
+                                                    selected == 12 ||
+                                                    selected == 13
                                                 ? CupertinoColors.activeBlue
                                                 : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Telugu",
-                                        style: TextStyle(
-                                            color: selected == 1
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Malayalam",
-                                        style: TextStyle(
-                                            color: selected == 2
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Kannada",
-                                        style: TextStyle(
-                                            color: selected == 3
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Bangla",
-                                        style: TextStyle(
-                                            color: selected == 4
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Gujarati",
-                                        style: TextStyle(
-                                            color: selected == 5
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Hindi",
-                                        style: TextStyle(
-                                            color: selected == 6
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Kashmiri",
-                                        style: TextStyle(
-                                            color: selected == 7
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Marathi",
-                                        style: TextStyle(
-                                            color: selected == 8
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Punjabi",
-                                        style: TextStyle(
-                                            color: selected == 9
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Urdu",
-                                        style: TextStyle(
-                                            color: selected == 10
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "English",
-                                        style: TextStyle(
-                                            color: selected == 11
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
-                                      Text(
-                                        "Other",
-                                        style: TextStyle(
-                                            color: selected == 12
-                                                ? CupertinoColors.activeBlue
-                                                : CupertinoColors.black),
-                                      ),
+                                          ),
+                                        ),
 
 /*                                 
 ssamese, Bangla, Bodo, Dogri, Gujarati, Hindi, Kashmiri, Kannada, Konkani, Maithili, Malayalam, Manipuri, Marathi, Nepali, Oriya, Punjabi, Tamil, Telugu, Santali, Sindhi, and Urdu
@@ -516,7 +503,10 @@ ssamese, Bangla, Bodo, Dogri, Gujarati, Hindi, Kashmiri, Kannada, Konkani, Maith
                                               color:
                                                   CupertinoColors.activeBlue),
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          addUser();
+                                          addChannel();
+                                        },
                                       ),
                                       CupertinoDialogAction(
                                         child: Text(
