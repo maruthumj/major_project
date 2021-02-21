@@ -1,10 +1,14 @@
 //import 'dart:ui';
 
 import 'dart:ui';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:major_project/screens/tv_channel/signup.dart';
+import 'package:major_project/screens/tv_channel/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key}) : super(key: key);
@@ -16,11 +20,12 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formkey = GlobalKey();
   TextEditingController _passwordController = new TextEditingController();
-  /* void _submit(
-    
-  ),*/
+  TextEditingController _resetpasswordController = new TextEditingController();
+  TextEditingController _emailController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth fauth = FirebaseAuth.instance;
+    Firestore firestore = Firestore.instance;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -45,20 +50,17 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    CupertinoColors.activeBlue,
-                    CupertinoColors.activeGreen,
-                  ],
-                ),
+                image: DecorationImage(
+                    image: AssetImage('assets/images/ios_sea.jpg'),
+                    fit: BoxFit.cover),
               ),
             ),
             Center(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                 child: Container(
-                  height: 320,
-                  width: 300,
+                  height: 340,
+                  width: 340,
                   decoration: BoxDecoration(
                     color: Colors.grey.shade400.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(50),
@@ -72,6 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextFormField(
                             decoration: InputDecoration(labelText: "Email"),
                             keyboardType: TextInputType.emailAddress,
+                            controller: _emailController,
                             validator: (value) {
                               if (value.isEmpty || !value.contains('@')) {
                                 return 'Invalid Email';
@@ -101,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: CupertinoColors.activeBlue,
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Signup()));
+                                  builder: (context) => HomeScreen()));
                             },
                           ),
                           Row(
@@ -127,17 +130,51 @@ class _LoginScreenState extends State<LoginScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(height: 3),
-                              Text(
-                                "Forgot Password?",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: CupertinoColors.activeBlue,
-                                  decoration: TextDecoration.underline,
+                              CupertinoButton(
+                                child: Text(
+                                  "Forgot Password?",
+                                  style: TextStyle(
+                                      decoration: TextDecoration.underline),
                                 ),
-                              ),
+                                onPressed: () {
+                                  showCupertinoDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) =>
+                                        CupertinoAlertDialog(
+                                      content: CupertinoTextField(
+                                        placeholder: "Email",
+                                        controller: _resetpasswordController,
+                                      ),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          child: Text("Reset Password"),
+                                          onPressed: () {
+                                            fauth.sendPasswordResetEmail(
+                                                email: _resetpasswordController
+                                                    .text);
+                                            _resetpasswordController.clear();
+                                            Navigator.pop(context, false);
+                                          },
+                                        ),
+                                        CupertinoDialogAction(
+                                          child: Text(
+                                            "Cancel",
+                                            style: TextStyle(
+                                                color:
+                                                    CupertinoColors.systemRed),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context, false);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              )
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -151,3 +188,27 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+/*
+context: context,
+                                      barrierDismissible: false,
+                                      builder: (BuildContext context) =>
+                                        CupertinoAlertDialog(
+                                      title: TextFormField(
+                                        controller: _resetpasswordController,
+                                        decoration:
+                                            InputDecoration(labelText: "Email"),
+                                      ),
+                                      content: Text(
+                                          "Password reset link will be sent to your mail"),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          child: Text(
+                                            "Reset Password",
+                                            style: TextStyle(
+                                                color:
+                                                    CupertinoColors.activeBlue),
+                                          ),
+                                          onPressed: () {},
+                                        ),
+                                      ],
+*/

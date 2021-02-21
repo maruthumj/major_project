@@ -5,7 +5,10 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:major_project/screens/advertisers/ad_Signup.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:major_project/screens/advertisers/ad_homescreen.dart';
 
 class ad_LoginScreen extends StatefulWidget {
@@ -18,8 +21,11 @@ class ad_LoginScreen extends StatefulWidget {
 class _ad_LoginScreenState extends State<ad_LoginScreen> {
   final GlobalKey<FormState> _formkey = GlobalKey();
   TextEditingController _passwordController = new TextEditingController();
+  TextEditingController _resetpasswordController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth fauth = FirebaseAuth.instance;
+    Firestore firestore = Firestore.instance;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -44,12 +50,9 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
           children: [
             Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    CupertinoColors.activeBlue,
-                    CupertinoColors.activeGreen,
-                  ],
-                ),
+                image: DecorationImage(
+                    image: AssetImage('assets/images/ios_sea.jpg'),
+                    fit: BoxFit.cover),
               ),
             ),
             Center(
@@ -126,14 +129,48 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(height: 3),
-                              Text(
-                                "Forgot Password?",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: CupertinoColors.activeBlue,
-                                  decoration: TextDecoration.underline,
+                              CupertinoButton(
+                                child: Text(
+                                  "Forgot Password?",
+                                  style: TextStyle(
+                                      decoration: TextDecoration.underline),
                                 ),
+                                onPressed: () {
+                                  showCupertinoDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) =>
+                                        CupertinoAlertDialog(
+                                      content: CupertinoTextField(
+                                        placeholder: "Email",
+                                        controller: _resetpasswordController,
+                                      ),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          child: Text("Reset Password"),
+                                          onPressed: () {
+                                            fauth.sendPasswordResetEmail(
+                                                email: _resetpasswordController
+                                                    .text);
+                                            _resetpasswordController.clear();
+                                            Navigator.pop(context, false);
+                                          },
+                                        ),
+                                        CupertinoDialogAction(
+                                          child: Text(
+                                            "Cancel",
+                                            style: TextStyle(
+                                                color:
+                                                    CupertinoColors.systemRed),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context, false);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           )

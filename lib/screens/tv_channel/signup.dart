@@ -25,6 +25,7 @@ class _SignupState extends State<Signup> {
 
   FirebaseAuth auth = FirebaseAuth.instance;
   TextEditingController _emailController = new TextEditingController();
+  TextEditingController _resetpasswordController = new TextEditingController();
   TextEditingController _weeklyviewers = new TextEditingController();
   TextEditingController _addressController = new TextEditingController();
   TextEditingController _nameController = new TextEditingController();
@@ -92,19 +93,6 @@ class _SignupState extends State<Signup> {
     }
   }
 
-  /* List<DropdownMenuItem> getmenuItem() {
-    List<DropdownMenuItem> list = [];
-    for (String value in languages) {
-      list.add(DropdownMenuItem(
-        child: Text(
-          value,
-          style: TextStyle(color: CupertinoColors.activeBlue),
-        ),
-        value: value,
-      ));
-    }
-  }*/
-
   @override
   Widget build(BuildContext context) {
     CollectionReference channel_details =
@@ -126,26 +114,16 @@ class _SignupState extends State<Signup> {
     }
 
     Future<void> addUser() {
-      if (_emailController != null && _phoneController != null) {
-        CollectionReference user_details =
-            Firestore.instance.collection("tv_account_details");
-        return user_details.document(getUID()).setData({
-          'email': _emailController.text,
-          'phone': _phoneController.text,
-        }).then((value) {
-          Fluttertoast.showToast(
-              msg: "User Created Successfully",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: CupertinoColors.extraLightBackgroundGray,
-              textColor: CupertinoColors.systemRed,
-              fontSize: 16.0);
-          print("User Added");
-        }).catchError((error) {
-          print("Failed to add user: $error");
-        });
-      }
+      CollectionReference user_details =
+          Firestore.instance.collection("tv_account_details");
+      return user_details.document(getUID()).setData({
+        'email': _emailController.text,
+        'phone': _phoneController.text,
+      }).then((value) {
+        print("User Added");
+      }).catchError((error) {
+        print("Failed to add user: $error");
+      });
     }
 
     return Scaffold(
@@ -182,7 +160,7 @@ class _SignupState extends State<Signup> {
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                     child: Container(
-                      height: 1500,
+                      height: 1270,
                       width: 500,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade400.withOpacity(0.5),
@@ -497,27 +475,24 @@ class _SignupState extends State<Signup> {
                                                     CupertinoColors.activeBlue),
                                           ),
                                           onPressed: () async {
+                                            FirebaseUser user =
+                                                await FirebaseAuth.instance
+                                                    .currentUser();
+                                            if (!user.isEmailVerified) {
+                                              await user
+                                                  .sendEmailVerification();
+                                            }
                                             auth.createUserWithEmailAndPassword(
                                                 email: _emailController.text,
                                                 password:
                                                     _passwordController.text);
                                             addChannel();
                                             addUser();
-                                            try {
-                                              FirebaseUser user =
-                                                  await auth.currentUser();
 
-                                              await user
-                                                  .sendEmailVerification();
-                                            } catch (e) {
-                                              print(
-                                                  "An error occured while trying to send email verification");
-                                              print(e.message);
-                                            }
-                                            await Navigator.of(context).push(
-                                                new MaterialPageRoute(
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
                                                     builder: (context) =>
-                                                        new Scaffold(
+                                                        Scaffold(
                                                             body:
                                                                 LoginScreen())));
                                           }),
