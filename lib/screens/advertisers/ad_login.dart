@@ -4,7 +4,9 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:major_project/screens/tv_channel/signup.dart';
+import 'package:major_project/screens/advertisers/ad_Signup.dart';
+
+import 'package:major_project/screens/advertisers/ad_homescreen.dart';
 
 class ad_LoginScreen extends StatefulWidget {
   ad_LoginScreen({Key key}) : super(key: key);
@@ -98,7 +100,7 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
                             color: CupertinoColors.activeBlue,
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Signup()));
+                                  builder: (context) => ad_homescreen()));
                             },
                           ),
                           Row(
@@ -116,7 +118,7 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
                                         fontWeight: FontWeight.bold)),
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => Signup()));
+                                      builder: (context) => ad_Signup()));
                                 },
                               ),
                             ],

@@ -7,6 +7,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:major_project/screens/tv_channel/loginscreen.dart';
+import 'package:major_project/screens/tv_channel/email_verification.dart';
+
+void main() async {
+  runApp(Signup());
+}
 
 class Signup extends StatefulWidget {
   Signup({Key key}) : super(key: key);
@@ -33,6 +38,7 @@ class _SignupState extends State<Signup> {
   bool _lights = false;
   String val, lang_name, val1, category_name;
   final _auth = FirebaseAuth.instance;
+  Firestore firestore = Firestore.instance;
 
   getUID() async {
     final FirebaseUser user = await auth.currentUser();
@@ -57,6 +63,8 @@ class _SignupState extends State<Signup> {
     "Urdu",
     "Kashmiri",
     "Assame",
+    "English",
+    "Other"
   ];
   List<String> category = [
     "Knowledge and Lifestyle",
@@ -105,16 +113,40 @@ class _SignupState extends State<Signup> {
       return channel_details
           .document()
           .setData({
-            'channel name': _channel_nameController.text,
-            'language': lang_name,
-            'category': category_name,
+            'Channel name': _channel_nameController.text,
+            'Language': lang_name,
+            'Category': category_name,
+            'Description': _descController.text,
+            'Featured ad': _lights,
+            'Address': _addressController.text,
+            'Weekly Viewers': _weeklyviewers.text,
           })
           .then((value) => print("channel added"))
           .catchError((error) => print("Failed to create channel: $error"));
     }
 
-    CollectionReference user_details =
-        Firestore.instance.collection("tv_account_details");
+    Future<void> addUser() {
+      if (_emailController != null && _phoneController != null) {
+        CollectionReference user_details =
+            Firestore.instance.collection("tv_account_details");
+        return user_details.document(getUID()).setData({
+          'email': _emailController.text,
+          'phone': _phoneController.text,
+        }).then((value) {
+          Fluttertoast.showToast(
+              msg: "User Created Successfully",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: CupertinoColors.extraLightBackgroundGray,
+              textColor: CupertinoColors.systemRed,
+              fontSize: 16.0);
+          print("User Added");
+        }).catchError((error) {
+          print("Failed to add user: $error");
+        });
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -292,6 +324,7 @@ class _SignupState extends State<Signup> {
                                   textAlign: TextAlign.start,
                                   minLines: 1,
                                   maxLines: 5,
+                                  controller: _descController,
                                   decoration: InputDecoration(
                                     labelText: 'Description',
                                     labelStyle: TextStyle(
@@ -453,54 +486,41 @@ class _SignupState extends State<Signup> {
                                   builder: (BuildContext context) =>
                                       CupertinoAlertDialog(
                                     title: Text(
-                                        'you need to verify your Email and Phone to create a new Account.'),
+                                        'you need to verify your Email to create a new Account.'),
                                     content: Text("Do you accept?"),
                                     actions: [
                                       CupertinoDialogAction(
-                                        child: Text(
-                                          'Yes',
-                                          style: TextStyle(
-                                              color:
-                                                  CupertinoColors.activeBlue),
-                                        ),
-                                        onPressed: () {
-                                          auth.createUserWithEmailAndPassword(
-                                              email: _emailController.text,
-                                              password:
-                                                  _passwordController.text);
-                                          Future<void> addUser() {
-                                            if (_emailController != null &&
-                                                _phoneController != null) {
-                                              return user_details
-                                                  .document(getUID())
-                                                  .setData({
-                                                'email': _emailController.text,
-                                                'phone': _phoneController.text,
-                                              }).then((value) {
-                                                Fluttertoast.showToast(
-                                                    msg:
-                                                        "User Created Successfully",
-                                                    toastLength:
-                                                        Toast.LENGTH_SHORT,
-                                                    gravity:
-                                                        ToastGravity.CENTER,
-                                                    timeInSecForIosWeb: 1,
-                                                    backgroundColor: CupertinoColors
-                                                        .extraLightBackgroundGray,
-                                                    textColor: CupertinoColors
-                                                        .systemRed,
-                                                    fontSize: 16.0);
-                                                print("User Added");
-                                              }).catchError((error) {
-                                                print(
-                                                    "Failed to add user: $error");
-                                              });
-                                            }
-                                          }
+                                          child: Text(
+                                            'Yes',
+                                            style: TextStyle(
+                                                color:
+                                                    CupertinoColors.activeBlue),
+                                          ),
+                                          onPressed: () async {
+                                            auth.createUserWithEmailAndPassword(
+                                                email: _emailController.text,
+                                                password:
+                                                    _passwordController.text);
+                                            addChannel();
+                                            addUser();
+                                            try {
+                                              FirebaseUser user =
+                                                  await auth.currentUser();
 
-                                          addChannel();
-                                        },
-                                      ),
+                                              await user
+                                                  .sendEmailVerification();
+                                            } catch (e) {
+                                              print(
+                                                  "An error occured while trying to send email verification");
+                                              print(e.message);
+                                            }
+                                            await Navigator.of(context).push(
+                                                new MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        new Scaffold(
+                                                            body:
+                                                                LoginScreen())));
+                                          }),
                                       CupertinoDialogAction(
                                         child: Text(
                                           'No',
@@ -554,8 +574,3 @@ class _SignupState extends State<Signup> {
     );
   }
 }
-
-/*
-
- 
-*/
