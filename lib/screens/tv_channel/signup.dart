@@ -457,7 +457,7 @@ class _SignupState extends State<Signup> {
                             CupertinoButton(
                               color: CupertinoColors.activeBlue,
                               child: Text("Create Account"),
-                              onPressed: () {
+                              onPressed: () async {
                                 showCupertinoDialog(
                                   context: context,
                                   barrierDismissible: false,
@@ -489,7 +489,7 @@ class _SignupState extends State<Signup> {
                                             addChannel();
                                             addUser();
 
-                                            Navigator.of(context).push(
+                                            await Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         Scaffold(

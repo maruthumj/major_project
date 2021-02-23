@@ -112,6 +112,10 @@ class _ad_SignupState extends State<ad_Signup> {
                             "Create Account",
                           ),
                           onPressed: () {
+                            FirebaseAuth fauth = FirebaseAuth.instance;
+                            fauth.createUserWithEmailAndPassword(
+                                email: _emailController.text,
+                                password: _passwordController.text);
                             CollectionReference advertisers_details = Firestore
                                 .instance
                                 .collection("advertisers_details");
@@ -121,13 +125,18 @@ class _ad_SignupState extends State<ad_Signup> {
                                 'Email': _emailController.text,
                                 'Phone': _phoneController.text,
                               }).then((value) {
-                                return "User Created Successfully";
                                 print("channel added");
                               }).catchError((error) {
                                 return "Failed to create Channel: $error";
                                 print("Failed to create channel: $error");
                               });
                             }
+
+                            _nameController.clear();
+                            _emailController.clear();
+                            _phoneController.clear();
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ad_LoginScreen()));
                           },
                         ),
                         SizedBox(height: 10),
