@@ -3,6 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:blur_bottom_bar/blur_bottom_bar.dart';
 import 'package:major_project/screens/tv_channel/loginscreen.dart';
+import 'package:major_project/screens/tv_channel/settings.dart';
+import 'package:major_project/screens/tv_channel/homespage.dart';
+import 'package:flutter/src/rendering/box.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -15,11 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   List<Widget> _widgetOptions = <Widget>[
     homespage(),
+    settings(),
     Text('Search Page',
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
-    Text('Search Page',
-        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
-    Text('Profile Page',
+    Text('Maruthu Page',
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
   ];
 
@@ -47,26 +49,17 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(
                 CupertinoIcons.home,
               ),
-              title: Text(
-                "Home",
-              )),
+              label: "Home"),
           BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.settings),
-              title: Text(
-                "Settings",
-              )),
+              icon: Icon(CupertinoIcons.settings), label: "Settings"),
           BottomNavigationBarItem(
-              icon: Icon(
-                CupertinoIcons.gauge,
-              ),
-              title: Text(
-                "Dashboard",
-              )),
+            icon: Icon(
+              CupertinoIcons.gauge,
+            ),
+            label: "Dashboard",
+          ),
           BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.person),
-              title: Text(
-                "Profile",
-              )),
+              icon: Icon(CupertinoIcons.person), label: "Profile"),
         ],
         currentIndex: _selectedIndex,
         unselectedItemColor: CupertinoColors.systemGrey,
@@ -76,98 +69,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-class profile extends StatefulWidget {
-  profile({Key key}) : super(key: key);
-
-  @override
-  _profileState createState() => _profileState();
-}
-
-class _profileState extends State<profile> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-          child: Stack(
-        children: [
-          Column(
-            children: [
-              CupertinoButton(
-                child: Text("SignOut"),
-                color: CupertinoColors.activeBlue,
-                onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => LoginScreen()));
-                },
-              )
-            ],
-          )
-        ],
-      )),
-    );
-  }
-}
-
-class homespage extends StatefulWidget {
-  homespage({Key key}) : super(key: key);
-
-  @override
-  _homespageState createState() => _homespageState();
-}
-
-class _homespageState extends State<homespage> {
-  DateTime _dateTime = DateTime.now();
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CupertinoColors.extraLightBackgroundGray,
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "TimeLine Date",
-                      style: TextStyle(
-                          color: CupertinoColors.activeOrange, fontSize: 20),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 80,
-                      width: 350,
-                      child: CupertinoDatePicker(
-                        backgroundColor: CupertinoColors.white,
-                        initialDateTime: _dateTime,
-                        mode: CupertinoDatePickerMode.date,
-                        onDateTimeChanged: (dateTime) {
-                          print(dateTime);
-                          setState(() {
-                            _dateTime = dateTime;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/*
-
-*/

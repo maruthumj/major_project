@@ -23,7 +23,7 @@ class _ad_SignupState extends State<ad_Signup> {
   TextEditingController _companyController = new TextEditingController();
   TextEditingController _phoneController = new TextEditingController();
   final _auth = FirebaseAuth.instance;
-  Firestore firestore = Firestore.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -116,11 +116,11 @@ class _ad_SignupState extends State<ad_Signup> {
                             fauth.createUserWithEmailAndPassword(
                                 email: _emailController.text,
                                 password: _passwordController.text);
-                            CollectionReference advertisers_details = Firestore
-                                .instance
-                                .collection("advertisers_details");
+                            CollectionReference advertisers_details =
+                                FirebaseFirestore.instance
+                                    .collection("advertisers_details");
                             Future<void> addChannel() {
-                              return advertisers_details.document().setData({
+                              return advertisers_details.doc().set({
                                 'Name': _nameController.text,
                                 'Email': _emailController.text,
                                 'Phone': _phoneController.text,

@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     FirebaseAuth fauth = FirebaseAuth.instance;
-    Firestore firestore = Firestore.instance;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -102,9 +102,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               "Login",
                             ),
                             color: CupertinoColors.activeBlue,
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => HomeScreen()));
+                            onPressed: () async {
+                              FirebaseAuth.instance.signInWithEmailAndPassword(
+                                  email: _emailController.text,
+                                  password: _passwordController.text);
                             },
                           ),
                           Row(

@@ -22,7 +22,7 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
   @override
   void initState() {
     super.initState();
-    if (FirebaseAuth.instance.currentUser() != null) {
+    if (FirebaseAuth.instance.currentUser != null) {
       // signed in
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => ad_homescreen()));
@@ -36,7 +36,7 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
   @override
   Widget build(BuildContext context) {
     FirebaseAuth fauth = FirebaseAuth.instance;
-    Firestore firestore = Firestore.instance;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     return Scaffold(
       appBar: AppBar(

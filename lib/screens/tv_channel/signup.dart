@@ -1,5 +1,6 @@
 import 'dart:ui';
-
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,10 +9,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:major_project/screens/tv_channel/loginscreen.dart';
 import 'package:major_project/screens/tv_channel/email_verification.dart';
-
-void main() async {
-  runApp(Signup());
-}
 
 class Signup extends StatefulWidget {
   Signup({Key key}) : super(key: key);
@@ -39,10 +36,10 @@ class _SignupState extends State<Signup> {
   bool _lights = false;
   String val, lang_name, val1, category_name;
   final _auth = FirebaseAuth.instance;
-  Firestore firestore = Firestore.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   getUID() async {
-    final FirebaseUser user = await auth.currentUser();
+    final User user = await auth.currentUser;
     final uid = user.uid;
     return uid;
   }
@@ -93,14 +90,25 @@ class _SignupState extends State<Signup> {
     }
   }
 
+  String emailValidator(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      return 'Email format is invalid';
+    } else {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     CollectionReference channel_details =
-        Firestore.instance.collection("tv_channel_details");
+        FirebaseFirestore.instance.collection("tv_channel_details");
     Future<void> addChannel() {
       return channel_details
-          .document()
-          .setData({
+          .doc()
+          .set({
             'Channel name': _channel_nameController.text,
             'Language': lang_name,
             'Category': category_name,
@@ -115,8 +123,8 @@ class _SignupState extends State<Signup> {
 
     Future<void> addUser() {
       CollectionReference user_details =
-          Firestore.instance.collection("tv_account_details");
-      return user_details.document(getUID()).setData({
+          FirebaseFirestore.instance.collection("tv_account_details");
+      return user_details.doc(getUID()).set({
         'email': _emailController.text,
         'phone': _phoneController.text,
       }).then((value) {
@@ -189,13 +197,7 @@ class _SignupState extends State<Signup> {
                                   labelStyle:
                                       TextStyle(color: CupertinoColors.black)),
                               keyboardType: TextInputType.emailAddress,
-                              validator: (value) {
-                                if (value.isEmpty || !value.contains('@')) {
-                                  return 'Invalid Email';
-                                }
-                                return null;
-                              },
-                              onSaved: (value) {},
+                              validator: emailValidator,
                             ),
                             TextFormField(
                               controller: _phoneController,
@@ -458,6 +460,11 @@ class _SignupState extends State<Signup> {
                               color: CupertinoColors.activeBlue,
                               child: Text("Create Account"),
                               onPressed: () async {
+                                await auth.createUserWithEmailAndPassword(
+                                    email: _emailController.text,
+                                    password: _passwordController.text);
+                                addChannel();
+                                addUser();
                                 showCupertinoDialog(
                                   context: context,
                                   barrierDismissible: false,
@@ -475,19 +482,12 @@ class _SignupState extends State<Signup> {
                                                     CupertinoColors.activeBlue),
                                           ),
                                           onPressed: () async {
-                                            FirebaseUser user =
-                                                await FirebaseAuth.instance
-                                                    .currentUser();
-                                            if (!user.isEmailVerified) {
+                                            User user = await FirebaseAuth
+                                                .instance.currentUser;
+                                            if (!user.emailVerified) {
                                               await user
                                                   .sendEmailVerification();
                                             }
-                                            auth.createUserWithEmailAndPassword(
-                                                email: _emailController.text,
-                                                password:
-                                                    _passwordController.text);
-                                            addChannel();
-                                            addUser();
 
                                             await Navigator.of(context).push(
                                                 MaterialPageRoute(
