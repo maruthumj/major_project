@@ -102,10 +102,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               "Login",
                             ),
                             color: CupertinoColors.activeBlue,
-                            onPressed: () async {
+                            onPressed: () {
                               FirebaseAuth.instance.signInWithEmailAndPassword(
                                   email: _emailController.text,
                                   password: _passwordController.text);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => HomeScreen()));
                             },
                           ),
                           Row(

@@ -77,19 +77,6 @@ class _SignupState extends State<Signup> {
     "Others"
   ];
 
-  List<DropdownMenuItem> getmenuItem1() {
-    List<DropdownMenuItem> list1 = [];
-    for (String value1 in category) {
-      list1.add(DropdownMenuItem(
-        child: Text(
-          value1,
-          style: TextStyle(color: CupertinoColors.activeBlue),
-        ),
-        value: value1,
-      ));
-    }
-  }
-
   String emailValidator(String value) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -105,34 +92,6 @@ class _SignupState extends State<Signup> {
   Widget build(BuildContext context) {
     CollectionReference channel_details =
         FirebaseFirestore.instance.collection("tv_channel_details");
-    Future<void> addChannel() {
-      return channel_details
-          .doc()
-          .set({
-            'Channel name': _channel_nameController.text,
-            'Language': lang_name,
-            'Category': category_name,
-            'Description': _descController.text,
-            'Featured ad': _lights,
-            'Address': _addressController.text,
-            'Weekly Viewers': _weeklyviewers.text,
-          })
-          .then((value) => print("channel added"))
-          .catchError((error) => print("Failed to create channel: $error"));
-    }
-
-    Future<void> addUser() {
-      CollectionReference user_details =
-          FirebaseFirestore.instance.collection("tv_account_details");
-      return user_details.doc(getUID()).set({
-        'email': _emailController.text,
-        'phone': _phoneController.text,
-      }).then((value) {
-        print("User Added");
-      }).catchError((error) {
-        print("Failed to add user: $error");
-      });
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -463,8 +422,37 @@ class _SignupState extends State<Signup> {
                                 await auth.createUserWithEmailAndPassword(
                                     email: _emailController.text,
                                     password: _passwordController.text);
-                                addChannel();
-                                addUser();
+                                final User user = auth.currentUser;
+                                final uid = user.uid;
+                                if (user != null) {
+                                  firestore
+                                      .collection("tv_channel_details")
+                                      .add({
+                                        'Channel name':
+                                            _channel_nameController.text,
+                                        'Language': lang_name,
+                                        'Category': category_name,
+                                        'Description': _descController.text,
+                                        'Featured ad': _lights,
+                                        'Address': _addressController.text,
+                                        'Weekly Viewers': _weeklyviewers.text,
+                                      })
+                                      .then((value) => print("channel added"))
+                                      .catchError((error) => print(
+                                          "Failed to create channel: $error"));
+                                  firestore
+                                      .collection("tv_channel_users_details")
+                                      .doc(uid)
+                                      .set({
+                                        'email': _emailController.text,
+                                        'name': _nameController.text,
+                                        'phone': _phoneController.text,
+                                      })
+                                      .then((value) => print("user added"))
+                                      .catchError((error) => print(
+                                          "Failed to create user details: $error"));
+                                }
+
                                 showCupertinoDialog(
                                   context: context,
                                   barrierDismissible: false,
