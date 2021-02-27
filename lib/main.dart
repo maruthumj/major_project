@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:major_project/screens/tv_channel/loginscreen.dart';
 import 'package:major_project/screens/advertisers/ad_login.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  runApp(
-    MyApp(),
-  );
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
