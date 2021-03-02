@@ -31,6 +31,7 @@ class _SignupState extends State<Signup> {
   TextEditingController _descController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
   TextEditingController _categoryController = new TextEditingController();
+  TextEditingController _nameController2 = new TextEditingController();
   int selected = 0;
   int selected1 = 0;
   bool _lights = false;
@@ -56,10 +57,8 @@ class _SignupState extends State<Signup> {
     "Bangla",
     "Kashmiri",
     "Marathi",
-    "Gujarati",
     "Punjabi",
     "Urdu",
-    "Kashmiri",
     "Assame",
     "English",
     "Other"
@@ -127,7 +126,7 @@ class _SignupState extends State<Signup> {
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                     child: Container(
-                      height: 1270,
+                      height: 1350,
                       width: 500,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade400.withOpacity(0.5),
@@ -148,6 +147,14 @@ class _SignupState extends State<Signup> {
                                 decoration: TextDecoration.underline,
                               ),
                               textAlign: TextAlign.center,
+                            ),
+                            TextFormField(
+                              controller: _nameController,
+                              decoration: InputDecoration(
+                                  labelText: "Name",
+                                  labelStyle:
+                                      TextStyle(color: CupertinoColors.black)),
+                              keyboardType: TextInputType.name,
                             ),
                             TextFormField(
                               controller: _emailController,
@@ -306,20 +313,8 @@ class _SignupState extends State<Signup> {
                                         Text(
                                           val,
                                           style: TextStyle(
-                                            color: (selected == 0 ||
-                                                    selected == 1 ||
-                                                    selected == 2 ||
-                                                    selected == 3 ||
-                                                    selected == 4 ||
-                                                    selected == 5 ||
-                                                    selected == 6 ||
-                                                    selected == 7 ||
-                                                    selected == 8 ||
-                                                    selected == 9 ||
-                                                    selected == 10 ||
-                                                    selected == 11 ||
-                                                    selected == 12 ||
-                                                    selected == 13
+                                            color: (selected ==
+                                                    languages.indexOf(val)
                                                 ? CupertinoColors.activeBlue
                                                 : CupertinoColors.black),
                                           ),
@@ -357,7 +352,10 @@ class _SignupState extends State<Signup> {
                                         Text(
                                           val1,
                                           style: TextStyle(
-                                            color: (CupertinoColors.activeBlue),
+                                            color: (selected1 ==
+                                                    category.indexOf(val1)
+                                                ? CupertinoColors.activeBlue
+                                                : CupertinoColors.black),
                                           ),
                                         ),
                                     ],
@@ -366,7 +364,7 @@ class _SignupState extends State<Signup> {
                                 MergeSemantics(
                                   child: ListTile(
                                     title: Text(
-                                      'Supports Featured Ads?(Real Estate/Telecom)',
+                                      'Supports Featured Ads?(Real Estate/Telecom/etc...)',
                                       style: TextStyle(
                                           color: CupertinoColors.activeOrange,
                                           fontWeight: FontWeight.bold,
@@ -470,11 +468,10 @@ class _SignupState extends State<Signup> {
                                                     CupertinoColors.activeBlue),
                                           ),
                                           onPressed: () async {
-                                            User user = await FirebaseAuth
+                                            User user = FirebaseAuth
                                                 .instance.currentUser;
                                             if (!user.emailVerified) {
-                                              await user
-                                                  .sendEmailVerification();
+                                              user.sendEmailVerification();
                                             }
 
                                             await Navigator.of(context).push(

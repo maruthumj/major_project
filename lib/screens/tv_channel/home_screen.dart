@@ -5,6 +5,7 @@ import 'package:blur_bottom_bar/blur_bottom_bar.dart';
 import 'package:major_project/screens/tv_channel/loginscreen.dart';
 import 'package:major_project/screens/tv_channel/settings.dart';
 import 'package:major_project/screens/tv_channel/homespage.dart';
+import 'package:major_project/screens/tv_channel/profile.dart';
 import 'package:flutter/src/rendering/box.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,8 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     settings(),
     Text('Search Page',
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
-    Text('Maruthu Page',
-        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+    profile(),
   ];
 
   void _onItemTapped(int index) {
@@ -34,14 +34,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text(
-            'Online Marketplace for TV ads',
-            style: TextStyle(color: CupertinoColors.activeBlue),
-          ),
-          backgroundColor: CupertinoColors.extraLightBackgroundGray),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: SafeArea(
+        child: Center(
+          child: _widgetOptions.elementAt(_selectedIndex),
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[

@@ -1,5 +1,3 @@
-//import 'dart:ui';
-
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:major_project/screens/tv_channel/signup.dart';
 import 'package:major_project/screens/tv_channel/home_screen.dart';
+import 'package:major_project/main.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key}) : super(key: key);
@@ -40,7 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           color: CupertinoColors.activeBlue,
           onPressed: () {
-            Navigator.pop(context, false);
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => MyApp()));
           },
         ),
         backgroundColor: CupertinoColors.extraLightBackgroundGray,
@@ -102,10 +102,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               "Login",
                             ),
                             color: CupertinoColors.activeBlue,
-                            onPressed: () {
-                              FirebaseAuth.instance.signInWithEmailAndPassword(
-                                  email: _emailController.text,
-                                  password: _passwordController.text);
+                            onPressed: () async {
+                              var _user = await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                      email: _emailController.text,
+                                      password: _passwordController.text);
+
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => HomeScreen()));
                             },
@@ -191,6 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
 /*
 context: context,
                                       barrierDismissible: false,

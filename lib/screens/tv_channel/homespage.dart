@@ -7,10 +7,8 @@ import 'package:major_project/screens/tv_channel/multi_form.dart';
 typedef OnDelete();
 
 class homespage extends StatefulWidget {
-  final data Data;
   final state = _homespageState();
-  final OnDelete onDelete;
-  homespage({this.Data, this.onDelete});
+
   @override
   _homespageState createState() => state;
 }
@@ -21,17 +19,12 @@ class _homespageState extends State<homespage> {
   List dropdownlist = ["AM", "PM"];
   List dropdownlist2 = ["AM", "PM"];
   String valueChooser, valueChooser2;
+  TextEditingController _noOfTimelineController = new TextEditingController();
+
   final form = GlobalKey<FormState>();
   List<data> datas = [];
   @override
   Widget build(BuildContext context) {
-    forms.clear();
-    for (int i = 0; i <= datas.length; i++) {
-      forms.add(multi_form(
-        Data: datas[i],
-        onDelete: () => onDelete(i),
-      ));
-    }
     return Scaffold(
       backgroundColor: CupertinoColors.extraLightBackgroundGray,
       body: SingleChildScrollView(
@@ -85,27 +78,6 @@ class _homespageState extends State<homespage> {
                     )
                   ],
                 ),
-                datas.length <= 0
-                    ? Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              child: IconButton(
-                                icon: Icon(CupertinoIcons.add_circled_solid),
-                                onPressed: onAddForm,
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: datas.length,
-                        itemBuilder: (_, i) => multi_form(
-                          Data: datas[i],
-                          onDelete: () => onDelete(i),
-                        ),
-                      )
               ],
             ),
           ],
@@ -113,22 +85,59 @@ class _homespageState extends State<homespage> {
       ),
     );
   }
+}
 
-  void onDelete(int index) {
-    setState(() {
-      datas.removeAt(index);
-    });
-  }
+class timeline extends StatefulWidget {
+  timeline({Key key}) : super(key: key);
 
-  void onAddForm() {
-    setState(() {
-      datas.add(data());
-    });
-  }
+  @override
+  _timelineState createState() => _timelineState();
+}
 
-  void onSave() {
-    setState(() {
-      forms.forEach((form) => form.isValid());
-    });
+class _timelineState extends State<timeline> {
+  TextEditingController _startingtimeController = new TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Form(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: _startingtimeController,
+                  decoration: InputDecoration(
+                    labelText: 'Starting time',
+                  ),
+                  keyboardType: TextInputType.datetime,
+                ),
+                TextFormField(
+                  controller: _startingtimeController,
+                  decoration: InputDecoration(
+                    labelText: 'Ending time',
+                  ),
+                  keyboardType: TextInputType.datetime,
+                ),
+              ],
+            ),
+          ),
+          Form(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Price/Second',
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
