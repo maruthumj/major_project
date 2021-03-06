@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-
-import 'package:major_project/screens/tv_channel/data.dart';
 import 'package:major_project/screens/tv_channel/multi_form.dart';
-
-typedef OnDelete();
 
 class homespage extends StatefulWidget {
   final state = _homespageState();
@@ -15,6 +11,7 @@ class homespage extends StatefulWidget {
 
 class _homespageState extends State<homespage> {
   List<multi_form> forms = [];
+  int num = 0;
   DateTime _dateTime = DateTime.now();
   List dropdownlist = ["AM", "PM"];
   List dropdownlist2 = ["AM", "PM"];
@@ -22,7 +19,7 @@ class _homespageState extends State<homespage> {
   TextEditingController _noOfTimelineController = new TextEditingController();
 
   final form = GlobalKey<FormState>();
-  List<data> datas = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,6 +75,10 @@ class _homespageState extends State<homespage> {
                     )
                   ],
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [],
+                ),
               ],
             ),
           ],
@@ -87,7 +88,7 @@ class _homespageState extends State<homespage> {
   }
 }
 
-class timeline extends StatefulWidget {
+/*class timeline extends StatefulWidget {
   timeline({Key key}) : super(key: key);
 
   @override
@@ -140,4 +141,4 @@ class _timelineState extends State<timeline> {
       ),
     );
   }
-}
+}*/

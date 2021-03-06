@@ -421,7 +421,7 @@ class _SignupState extends State<Signup> {
                                     email: _emailController.text,
                                     password: _passwordController.text);
                                 final User user = auth.currentUser;
-                                final uid = user.uid;
+                                final String uid = user.uid;
                                 if (user != null) {
                                   firestore
                                       .collection("tv_channel_details")
@@ -434,6 +434,7 @@ class _SignupState extends State<Signup> {
                                         'Featured ad': _lights,
                                         'Address': _addressController.text,
                                         'Weekly Viewers': _weeklyviewers.text,
+                                        'uid': uid,
                                       })
                                       .then((value) => print("channel added"))
                                       .catchError((error) => print(

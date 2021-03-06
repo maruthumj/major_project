@@ -7,18 +7,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:major_project/screens/advertisers/ad_login.dart';
 
-void main() {
-  final debugOptions = CatcherOptions(DialogReportMode(), [
-    ConsoleHandler(),
-  ]);
-
-  Catcher(
-    rootWidget: ad_homescreen(),
-    debugConfig: debugOptions,
-    enableLogger: false,
-  );
-}
-
 class ad_homescreen extends StatefulWidget {
   ad_homescreen({Key key}) : super(key: key);
 

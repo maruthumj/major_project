@@ -21,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _passwordController = new TextEditingController();
   TextEditingController _resetpasswordController = new TextEditingController();
   TextEditingController _emailController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     FirebaseAuth fauth = FirebaseAuth.instance;
