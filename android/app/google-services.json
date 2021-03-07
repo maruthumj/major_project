@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "157645226976",
+    "project_id": "online-marketplace-for-tv-ads",
+    "storage_bucket": "online-marketplace-for-tv-ads.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157645226976:android:0259f9c493e9c52ae2a185",
+        "android_client_info": {
+          "package_name": "com.example.major_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "157645226976-kh3dsmd3lua3pm5mnbbsrn1hiodm9go0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5nVruZfrqIM0txemBVgjvk2bauNMAgNs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "157645226976-kh3dsmd3lua3pm5mnbbsrn1hiodm9go0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
