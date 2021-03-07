@@ -24,7 +24,8 @@ class _ad_homescreenState extends State<ad_homescreen> {
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
     Text('Search Page',
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
-    ad_profile(),
+    Text('Search Page',
+        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
   ];
 
   void _onItemTapped(int index) {
