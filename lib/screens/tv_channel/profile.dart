@@ -8,13 +8,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class profile extends StatefulWidget {
   @override
-  _profileState createState() {
-    _profileState();
-  }
+  _profileState createState() => _profileState();
 }
 
 class _profileState extends State<profile> {
-  @override
   TextEditingController _nameeditController = new TextEditingController();
   TextEditingController _emaileditController = new TextEditingController();
   TextEditingController _phoneeditController = new TextEditingController();
@@ -38,26 +35,79 @@ class _profileState extends State<profile> {
       weekly_viewers = '',
       address = '';
 
-  Future<void> setphonenum() async {
-    final CollectionReference users =
-        fstore.collection('tv_channel_users_details');
-    return await users
-        .doc(_uid)
-        .update({'phone': _phoneeditController.text}).then((value) {
-      print("updated successfuly");
-      _nameeditController.clear();
+  actionSheetMethod() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return CupertinoActionSheet(
+            title: Text(
+              "Menu",
+              style:
+                  TextStyle(color: CupertinoColors.activeOrange, fontSize: 25),
+            ),
+            actions: [
+              CupertinoActionSheetAction(
+                child: Text(
+                  "Logout",
+                  style: TextStyle(color: CupertinoColors.activeBlue),
+                ),
+                onPressed: () {},
+                isDefaultAction: true,
+              ),
+              CupertinoActionSheetAction(
+                child: Text(
+                  "Delete Account!",
+                  style: TextStyle(color: CupertinoColors.activeBlue),
+                ),
+                onPressed: () {},
+                isDefaultAction: true,
+              ),
+            ],
+            cancelButton: Text(
+              "Cancel",
+              style: TextStyle(
+                color: CupertinoColors.systemRed,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        });
+  }
+
+  Future<void> getchanneldata() async {
+    QuerySnapshot queryDocumentSnapshot = await fstore
+        .collection("tv_channel_details")
+        .where("uid", isEqualTo: "$_uid")
+        .get();
+    setState(() {
+      queryDocumentSnapshot.docs.forEach((doc) {
+        channel_name = doc['Channel name'];
+        description = doc['Description'];
+        category = doc['Category'];
+        language = doc['Language'];
+        weekly_viewers = doc['Weekly Viewers'];
+        address = doc['Address'];
+        print(channel_name);
+        print(address);
+      });
     });
   }
 
-  Future<void> setname() async {
-    final CollectionReference users =
-        fstore.collection('tv_channel_users_details');
-    return await users
-        .doc(_uid)
-        .update({'name': _nameeditController.text}).then((value) {
-      print("updated success fully");
-      _phoneeditController.clear();
+  Future<void> getuserdata() async {
+    DocumentSnapshot documentSnapshot =
+        await fstore.collection("tv_channel_users_details").doc(_uid).get();
+    this.setState(() {
+      name = documentSnapshot.data()['name'];
+      emailid = documentSnapshot.data()['email'];
+      phonenum = documentSnapshot.data()['phone'];
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.getchanneldata();
+    this.getuserdata();
   }
 
   @override
@@ -87,34 +137,8 @@ class _profileState extends State<profile> {
                       ),
                       IconButton(
                         icon: Icon(CupertinoIcons.ellipsis),
-                        onPressed: () {
-                          /*CupertinoActionSheet(
-                            actions: [
-                              CupertinoActionSheetAction(
-                                child: Text(
-                                  "Logout",
-                                  style: TextStyle(
-                                      color: CupertinoColors.activeBlue),
-                                ),
-                                onPressed: () {},
-                                isDefaultAction: true,
-                              ),
-                              CupertinoActionSheetAction(
-                                child: Text(
-                                  "Delete Account!",
-                                  style: TextStyle(
-                                      color: CupertinoColors.activeBlue),
-                                ),
-                                onPressed: () {},
-                                isDefaultAction: true,
-                              ),
-                            ],
-                            cancelButton: Text(
-                              "Cancel",
-                              style:
-                                  TextStyle(color: CupertinoColors.systemRed),
-                            ),
-                          );*/
+                        onPressed: () async {
+                          await actionSheetMethod();
                         },
                       ),
                     ],
@@ -168,10 +192,19 @@ class _profileState extends State<profile> {
                               actions: [
                                 CupertinoDialogAction(
                                     child: Text("Update"),
-                                    onPressed: () {
-                                      setname();
+                                    onPressed: () async {
+                                      final CollectionReference users =
+                                          fstore.collection(
+                                              'tv_channel_users_details');
+                                      await users.doc(_uid).update({
+                                        'name': _nameeditController.text
+                                      }).then((value) {
+                                        print("updated successfully");
+                                        _phoneeditController.clear();
+                                      });
+                                      getuserdata();
 
-                                      Navigator.pop(context);
+                                      Navigator.pop(context, false);
                                     }),
                                 CupertinoDialogAction(
                                   child: Text(
@@ -244,8 +277,18 @@ class _profileState extends State<profile> {
                               actions: [
                                 CupertinoDialogAction(
                                     child: Text("Update"),
-                                    onPressed: () {
-                                      setphonenum();
+                                    onPressed: () async {
+                                      final CollectionReference users =
+                                          fstore.collection(
+                                              'tv_channel_users_details');
+                                      await users.doc(_uid).update({
+                                        'phone': _phoneeditController.text
+                                      }).then((value) {
+                                        print("updated successfuly");
+                                        _nameeditController.clear();
+                                      });
+                                      getuserdata();
+
                                       Navigator.pop(context, false);
                                     }),
                                 CupertinoDialogAction(
@@ -548,32 +591,5 @@ class _profileState extends State<profile> {
     );
   }
 
-  Getuserdata() async {
-    DocumentSnapshot documentSnapshot =
-        await fstore.collection("tv_channel_users_details").doc(_uid).get();
-    this.setState(() {
-      name = documentSnapshot.data()['name'];
-      emailid = documentSnapshot.data()['email'];
-      phonenum = documentSnapshot.data()['phone'];
-    });
-  }
-
-  GetChannelData() async {
-    QuerySnapshot queryDocumentSnapshot = await fstore
-        .collection("tv_channel_details")
-        .where("uid", isEqualTo: "$_uid")
-        .get();
-    setState(() {
-      queryDocumentSnapshot.docs.forEach((doc) {
-        channel_name = doc['Channel name'];
-        description = doc['Description'];
-        category = doc['Category'];
-        language = doc['Language'];
-        weekly_viewers = doc['Weekly Viewers'];
-        address = doc['Address'];
-        print(channel_name);
-        print(address);
-      });
-    });
-  }
+  void myActionSheet(context) {}
 }
