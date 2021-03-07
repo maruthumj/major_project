@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:major_project/screens/tv_channel/loginscreen.dart';
 
 class profile extends StatefulWidget {
   @override
@@ -13,16 +14,22 @@ class profile extends StatefulWidget {
 
 class _profileState extends State<profile> {
   TextEditingController _nameeditController = new TextEditingController();
-  TextEditingController _emaileditController = new TextEditingController();
+
   TextEditingController _phoneeditController = new TextEditingController();
+  TextEditingController _languageController = new TextEditingController();
   TextEditingController _channelnameController = new TextEditingController();
   TextEditingController _descriptionController = new TextEditingController();
   TextEditingController _categoryController = new TextEditingController();
   TextEditingController _addressController = new TextEditingController();
   TextEditingController _weeklyviewersController = new TextEditingController();
+  bool _lights;
 
   FirebaseAuth fauth = FirebaseAuth.instance;
   FirebaseFirestore fstore = FirebaseFirestore.instance;
+
+  Future<void> _signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
 
   final String _uid = FirebaseAuth.instance.currentUser.uid;
   String name = '',
@@ -40,18 +47,51 @@ class _profileState extends State<profile> {
         context: context,
         builder: (context) {
           return CupertinoActionSheet(
-            title: Text(
-              "Menu",
-              style:
-                  TextStyle(color: CupertinoColors.activeOrange, fontSize: 25),
-            ),
             actions: [
+              MergeSemantics(
+                child: ListTile(
+                  title: Text(
+                    'Featured ads',
+                    style: TextStyle(
+                      color: CupertinoColors.activeBlue,
+                    ),
+                  ),
+                  trailing: CupertinoSwitch(
+                    value: _lights,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _lights = value;
+                      });
+                    },
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _lights = !_lights;
+
+                      fstore
+                          .collection("tv_channel_details")
+                          .where("uid", isEqualTo: "$_uid")
+                          .get()
+                          .then((QuerySnapshot querySnapshot) {
+                        querySnapshot.docs.forEach((doc) {
+                          doc.reference.update({"Featured ad": _lights});
+                        });
+                      });
+                      Navigator.pop(context, false);
+                    });
+                  },
+                ),
+              ),
               CupertinoActionSheetAction(
                 child: Text(
                   "Logout",
                   style: TextStyle(color: CupertinoColors.activeBlue),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  _signOut();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Scaffold(body: LoginScreen())));
+                },
                 isDefaultAction: true,
               ),
               CupertinoActionSheetAction(
@@ -59,17 +99,24 @@ class _profileState extends State<profile> {
                   "Delete Account!",
                   style: TextStyle(color: CupertinoColors.activeBlue),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  User fuser = fauth.currentUser;
+                  fuser.delete();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Scaffold(body: LoginScreen())));
+                },
                 isDefaultAction: true,
               ),
+              CupertinoActionSheetAction(
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(color: CupertinoColors.systemRed),
+                ),
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+              )
             ],
-            cancelButton: Text(
-              "Cancel",
-              style: TextStyle(
-                color: CupertinoColors.systemRed,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
           );
         });
   }
@@ -87,6 +134,7 @@ class _profileState extends State<profile> {
         language = doc['Language'];
         weekly_viewers = doc['Weekly Viewers'];
         address = doc['Address'];
+        _lights = doc['Featured ads'];
         print(channel_name);
         print(address);
       });
@@ -106,8 +154,14 @@ class _profileState extends State<profile> {
   @override
   void initState() {
     super.initState();
-    this.getchanneldata();
-    this.getuserdata();
+    User fuser = fauth.currentUser;
+    if (fuser != null) {
+      this.getchanneldata();
+      this.getuserdata();
+    } else {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => Scaffold(body: LoginScreen())));
+    }
   }
 
   @override
@@ -352,11 +406,26 @@ class _profileState extends State<profile> {
                                 CupertinoAlertDialog(
                               content: CupertinoTextField(
                                 placeholder: "Channel Name",
-                                controller: _phoneeditController,
+                                controller: _channelnameController,
                               ),
                               actions: [
                                 CupertinoDialogAction(
-                                    child: Text("Update"), onPressed: () {}),
+                                    child: Text("Update"),
+                                    onPressed: () async {
+                                      await fstore
+                                          .collection("tv_channel_details")
+                                          .where("uid", isEqualTo: "$_uid")
+                                          .get()
+                                          .then((QuerySnapshot querySnapshot) {
+                                        querySnapshot.docs.forEach((doc) {
+                                          doc.reference.update({
+                                            "Channel name":
+                                                _channelnameController.text
+                                          });
+                                        });
+                                      });
+                                      Navigator.pop(context, false);
+                                    }),
                                 CupertinoDialogAction(
                                   child: Text(
                                     "Cancel",
@@ -403,11 +472,26 @@ class _profileState extends State<profile> {
                                 CupertinoAlertDialog(
                               content: CupertinoTextField(
                                 placeholder: "Description",
-                                controller: _phoneeditController,
+                                controller: _descriptionController,
                               ),
                               actions: [
                                 CupertinoDialogAction(
-                                    child: Text("Update"), onPressed: () {}),
+                                    child: Text("Update"),
+                                    onPressed: () async {
+                                      await fstore
+                                          .collection("tv_channel_details")
+                                          .where("uid", isEqualTo: "$_uid")
+                                          .get()
+                                          .then((QuerySnapshot querySnapshot) {
+                                        querySnapshot.docs.forEach((doc) {
+                                          doc.reference.update({
+                                            "Description":
+                                                _descriptionController.text
+                                          });
+                                        });
+                                      });
+                                      Navigator.pop(context, false);
+                                    }),
                                 CupertinoDialogAction(
                                   child: Text(
                                     "Cancel",
@@ -454,11 +538,26 @@ class _profileState extends State<profile> {
                                 CupertinoAlertDialog(
                               content: CupertinoTextField(
                                 placeholder: "Category",
-                                controller: _phoneeditController,
+                                controller: _categoryController,
                               ),
                               actions: [
                                 CupertinoDialogAction(
-                                    child: Text("Update"), onPressed: () {}),
+                                    child: Text("Update"),
+                                    onPressed: () async {
+                                      await fstore
+                                          .collection("tv_channel_details")
+                                          .where("uid", isEqualTo: "$_uid")
+                                          .get()
+                                          .then((QuerySnapshot querySnapshot) {
+                                        querySnapshot.docs.forEach((doc) {
+                                          doc.reference.update({
+                                            "Category":
+                                                _channelnameController.text
+                                          });
+                                        });
+                                      });
+                                      Navigator.pop(context, false);
+                                    }),
                                 CupertinoDialogAction(
                                   child: Text(
                                     "Cancel",
@@ -505,11 +604,25 @@ class _profileState extends State<profile> {
                                 CupertinoAlertDialog(
                               content: CupertinoTextField(
                                 placeholder: "Language",
-                                controller: _phoneeditController,
+                                controller: _languageController,
                               ),
                               actions: [
                                 CupertinoDialogAction(
-                                    child: Text("Update"), onPressed: () {}),
+                                    child: Text("Update"),
+                                    onPressed: () async {
+                                      await fstore
+                                          .collection("tv_channel_details")
+                                          .where("uid", isEqualTo: "$_uid")
+                                          .get()
+                                          .then((QuerySnapshot querySnapshot) {
+                                        querySnapshot.docs.forEach((doc) {
+                                          doc.reference.update({
+                                            "Language": _languageController.text
+                                          });
+                                        });
+                                      });
+                                      Navigator.pop(context, false);
+                                    }),
                                 CupertinoDialogAction(
                                   child: Text(
                                     "Cancel",
@@ -560,11 +673,91 @@ class _profileState extends State<profile> {
                                 CupertinoAlertDialog(
                               content: CupertinoTextField(
                                 placeholder: "Address",
-                                controller: _phoneeditController,
+                                controller: _addressController,
                               ),
                               actions: [
                                 CupertinoDialogAction(
-                                    child: Text("Update"), onPressed: () {}),
+                                    child: Text("Update"),
+                                    onPressed: () async {
+                                      await fstore
+                                          .collection("tv_channel_details")
+                                          .where("uid", isEqualTo: "$_uid")
+                                          .get()
+                                          .then((QuerySnapshot querySnapshot) {
+                                        querySnapshot.docs.forEach((doc) {
+                                          doc.reference.update({
+                                            "Category": _categoryController.text
+                                          });
+                                        });
+                                      });
+                                      Navigator.pop(context, false);
+                                    }),
+                                CupertinoDialogAction(
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        color: CupertinoColors.systemRed),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context, false);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  color: CupertinoColors.secondarySystemBackground,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(
+                        CupertinoIcons.person_3_fill,
+                        size: 30,
+                        color: CupertinoColors.activeBlue,
+                      ),
+                      Text(
+                        weekly_viewers,
+                        style: TextStyle(color: CupertinoColors.black),
+                      ),
+                      IconButton(
+                        icon: Icon(CupertinoIcons.pencil_outline),
+                        color: CupertinoColors.black,
+                        onPressed: () {
+                          showCupertinoDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) =>
+                                CupertinoAlertDialog(
+                              content: CupertinoTextField(
+                                placeholder: "Weekly Viewers",
+                                controller: _weeklyviewersController,
+                              ),
+                              actions: [
+                                CupertinoDialogAction(
+                                    child: Text("Update"),
+                                    onPressed: () async {
+                                      await fstore
+                                          .collection("tv_channel_details")
+                                          .where("uid", isEqualTo: "$_uid")
+                                          .get()
+                                          .then((QuerySnapshot querySnapshot) {
+                                        querySnapshot.docs.forEach((doc) {
+                                          doc.reference.update({
+                                            "Weekly Viewers":
+                                                _weeklyviewersController.text
+                                          });
+                                        });
+                                      });
+                                      Navigator.pop(context, false);
+                                    }),
                                 CupertinoDialogAction(
                                   child: Text(
                                     "Cancel",
@@ -590,6 +783,4 @@ class _profileState extends State<profile> {
       ),
     );
   }
-
-  void myActionSheet(context) {}
 }

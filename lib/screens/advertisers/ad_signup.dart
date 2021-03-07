@@ -111,7 +111,7 @@ class _ad_SignupState extends State<ad_Signup> {
                           child: Text(
                             "Create Account",
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             FirebaseAuth fauth = FirebaseAuth.instance;
                             fauth.createUserWithEmailAndPassword(
                                 email: _emailController.text,
@@ -119,18 +119,20 @@ class _ad_SignupState extends State<ad_Signup> {
                             CollectionReference advertisers_details =
                                 FirebaseFirestore.instance
                                     .collection("advertisers_details");
-                            Future<void> addChannel() {
-                              return advertisers_details.doc().set({
-                                'Name': _nameController.text,
-                                'Email': _emailController.text,
-                                'Phone': _phoneController.text,
-                              }).then((value) {
-                                print("channel added");
-                              }).catchError((error) {
-                                return "Failed to create Channel: $error";
-                                print("Failed to create channel: $error");
-                              });
-                            }
+                            User fuser = fauth.currentUser;
+                            final uid = fuser.uid;
+
+                            await advertisers_details.doc(uid).set({
+                              'uid': uid,
+                              'Name': _nameController.text,
+                              'Email': _emailController.text,
+                              'Phone': _phoneController.text,
+                            }).then((value) {
+                              print("channel added");
+                            }).catchError((error) {
+                              return "Failed to create Channel: $error";
+                              print("Failed to create channel: $error");
+                            });
 
                             _nameController.clear();
                             _emailController.clear();

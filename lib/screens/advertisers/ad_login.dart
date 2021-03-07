@@ -19,16 +19,6 @@ class ad_LoginScreen extends StatefulWidget {
 }
 
 class _ad_LoginScreenState extends State<ad_LoginScreen> {
-  @override
-  void initState() {
-    if (FirebaseAuth.instance.currentUser != null) {
-      // signed in
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => ad_homescreen()));
-    }
-    super.initState();
-  }
-
   final GlobalKey<FormState> _formkey = GlobalKey();
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
