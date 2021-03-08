@@ -155,13 +155,13 @@ class _profileState extends State<profile> {
   void initState() {
     super.initState();
     User fuser = fauth.currentUser;
-    if (fuser != null) {
-      this.getchanneldata();
-      this.getuserdata();
-    } else {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Scaffold(body: LoginScreen())));
-    }
+    //
+    this.getchanneldata();
+    this.getuserdata();
+    //} else {
+    //Navigator.of(context).push(MaterialPageRoute(
+    //  builder: (context) => Scaffold(body: LoginScreen())));
+    //}
   }
 
   @override

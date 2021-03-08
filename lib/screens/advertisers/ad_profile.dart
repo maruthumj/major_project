@@ -18,14 +18,8 @@ class _ad_profileState extends State<ad_profile> {
   @override
   void initState() {
     super.initState();
-    User fuser = fauth.currentUser;
 
-    if (fuser != null) {
-      this.get_ad_profile();
-    } else {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Scaffold(body: LoginScreen())));
-    }
+    this.get_ad_profile();
   }
 
   TextEditingController _nameeditController = new TextEditingController();
@@ -39,217 +33,235 @@ class _ad_profileState extends State<ad_profile> {
   }
 
   get_ad_profile() async {
+    User fuser = fauth.currentUser;
+    final _uid = fuser.uid;
     DocumentSnapshot documentSnapshot =
-        await fstore.collection("tv_channel_users_details").doc(_uid).get();
+        await fstore.collection("advertisers_details").doc(_uid).get();
     this.setState(() {
-      name = documentSnapshot.data()['name'];
-      emailid = documentSnapshot.data()['email'];
-      phonenum = documentSnapshot.data()['phone'];
+      emailid = documentSnapshot.data()['Email'];
+      phonenum = documentSnapshot.data()['Phone'];
     });
   }
 
-  final String _uid = FirebaseAuth.instance.currentUser.uid;
-  String name = '', emailid = '', phonenum = '';
+  User fuser = FirebaseAuth.instance.currentUser;
+
+  String name = 'Maruthu', emailid = '', phonenum = '';
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                Container(
-                  color: CupertinoColors.secondarySystemBackground,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(
-                        CupertinoIcons.rectangle_stack_person_crop,
-                        color: CupertinoColors.activeGreen,
-                        size: 35,
-                      ),
-                      Text(
-                        "Profile",
-                        style: TextStyle(
-                            color: CupertinoColors.activeGreen,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                      ),
-                      IconButton(
-                        icon: Icon(CupertinoIcons.ellipsis),
-                        onPressed: () async {},
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 30,
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    color: CupertinoColors.secondarySystemBackground,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          CupertinoIcons.rectangle_stack_person_crop,
+                          color: CupertinoColors.activeGreen,
+                          size: 35,
+                        ),
+                        Text(
+                          "Profile",
+                          style: TextStyle(
+                              color: CupertinoColors.activeGreen,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
+                        ),
+                      ],
                     ),
-                    Text(
-                      "Account Details",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: CupertinoColors.activeOrange,
-                          fontSize: 17),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Container(
-                  color: CupertinoColors.secondarySystemBackground,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(
-                        CupertinoIcons.person_alt_circle,
-                        size: 30,
-                        color: CupertinoColors.activeBlue,
-                      ),
-                      Text(
-                        name,
-                        style: TextStyle(color: CupertinoColors.black),
-                      ),
-                      IconButton(
-                        icon: Icon(CupertinoIcons.pencil_outline),
-                        color: CupertinoColors.black,
-                        onPressed: () {
-                          showCupertinoDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (BuildContext context) =>
-                                CupertinoAlertDialog(
-                              content: CupertinoTextField(
-                                placeholder: "Name",
-                                controller: _nameeditController,
-                              ),
-                              actions: [
-                                CupertinoDialogAction(
-                                    child: Text("Update"),
-                                    onPressed: () async {
-                                      final CollectionReference users =
-                                          fstore.collection(
-                                              'tv_channel_users_details');
-                                      await users.doc(_uid).update({
-                                        'name': _nameeditController.text
-                                      }).then((value) {
-                                        print("updated successfully");
-                                        _phoneeditController.clear();
-                                      });
-                                      get_ad_profile();
-
-                                      Navigator.pop(context, false);
-                                    }),
-                                CupertinoDialogAction(
-                                  child: Text(
-                                    "Cancel",
-                                    style: TextStyle(
-                                        color: CupertinoColors.systemRed),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context, false);
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ],
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  color: CupertinoColors.secondarySystemBackground,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        CupertinoIcons.mail_solid,
-                        size: 30,
-                        color: CupertinoColors.activeBlue,
-                      ),
                       SizedBox(
-                        width: 50,
+                        height: 30,
                       ),
                       Text(
-                        emailid,
-                        style: TextStyle(color: CupertinoColors.black),
+                        "Account Details",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: CupertinoColors.activeOrange,
+                            fontSize: 17),
                       ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  color: CupertinoColors.secondarySystemBackground,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Icon(CupertinoIcons.phone,
-                          size: 30, color: CupertinoColors.activeBlue),
-                      Text(
-                        phonenum,
-                        style: TextStyle(color: CupertinoColors.black),
-                      ),
-                      IconButton(
-                        icon: Icon(CupertinoIcons.pencil_outline),
-                        color: CupertinoColors.black,
-                        onPressed: () {
-                          showCupertinoDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (BuildContext context) =>
-                                CupertinoAlertDialog(
-                              content: CupertinoTextField(
-                                placeholder: "Phone Number",
-                                controller: _phoneeditController,
-                              ),
-                              actions: [
-                                CupertinoDialogAction(
-                                    child: Text("Update"),
-                                    onPressed: () async {
-                                      final CollectionReference users =
-                                          fstore.collection(
-                                              'tv_channel_users_details');
-                                      await users.doc(_uid).update({
-                                        'phone': _phoneeditController.text
-                                      }).then((value) {
-                                        print("updated successfuly");
-                                        _nameeditController.clear();
-                                      });
-                                      get_ad_profile();
-
-                                      Navigator.pop(context, false);
-                                    }),
-                                CupertinoDialogAction(
-                                  child: Text(
-                                    "Cancel",
-                                    style: TextStyle(
-                                        color: CupertinoColors.systemRed),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context, false);
-                                  },
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    color: CupertinoColors.secondarySystemBackground,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          CupertinoIcons.person_alt_circle,
+                          size: 30,
+                          color: CupertinoColors.activeBlue,
+                        ),
+                        Text(
+                          name,
+                          style: TextStyle(color: CupertinoColors.black),
+                        ),
+                        IconButton(
+                          icon: Icon(CupertinoIcons.pencil_outline),
+                          color: CupertinoColors.black,
+                          onPressed: () {
+                            showCupertinoDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) =>
+                                  CupertinoAlertDialog(
+                                content: CupertinoTextField(
+                                  placeholder: "Name",
+                                  controller: _nameeditController,
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                                actions: [
+                                  CupertinoDialogAction(
+                                      child: Text("Update"),
+                                      onPressed: () async {
+                                        final _uid = fauth.currentUser.uid;
+                                        final CollectionReference users = fstore
+                                            .collection('advertisers_details');
+
+                                        await users.doc(_uid).update({
+                                          'name': _nameeditController.text
+                                        }).then((value) {
+                                          print("updated successfully");
+                                          _phoneeditController.clear();
+                                        });
+                                        get_ad_profile();
+
+                                        Navigator.pop(context, false);
+                                      }),
+                                  CupertinoDialogAction(
+                                    child: Text(
+                                      "Cancel",
+                                      style: TextStyle(
+                                          color: CupertinoColors.systemRed),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context, false);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            )
-          ],
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    color: CupertinoColors.secondarySystemBackground,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          CupertinoIcons.mail_solid,
+                          size: 30,
+                          color: CupertinoColors.activeBlue,
+                        ),
+                        SizedBox(
+                          width: 50,
+                        ),
+                        Text(
+                          emailid,
+                          style: TextStyle(color: CupertinoColors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    color: CupertinoColors.secondarySystemBackground,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(CupertinoIcons.mail,
+                            size: 30, color: CupertinoColors.activeBlue),
+                        Text(
+                          emailid,
+                          style: TextStyle(color: CupertinoColors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    color: CupertinoColors.secondarySystemBackground,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(CupertinoIcons.phone,
+                            size: 30, color: CupertinoColors.activeBlue),
+                        Text(
+                          phonenum,
+                          style: TextStyle(color: CupertinoColors.black),
+                        ),
+                        IconButton(
+                          icon: Icon(CupertinoIcons.pencil_outline),
+                          color: CupertinoColors.black,
+                          onPressed: () {
+                            showCupertinoDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) =>
+                                  CupertinoAlertDialog(
+                                content: CupertinoTextField(
+                                  placeholder: "Phone Number",
+                                  controller: _phoneeditController,
+                                ),
+                                actions: [
+                                  CupertinoDialogAction(
+                                      child: Text("Update"),
+                                      onPressed: () async {
+                                        final _uid = fauth.currentUser.uid;
+                                        final CollectionReference users = fstore
+                                            .collection('advertisers_details');
+                                        await users.doc(_uid).update({
+                                          'phone': _phoneeditController.text
+                                        }).then((value) {
+                                          print("updated successfuly");
+                                          _nameeditController.clear();
+                                        });
+                                        get_ad_profile();
+
+                                        Navigator.pop(context, false);
+                                      }),
+                                  CupertinoDialogAction(
+                                    child: Text(
+                                      "Cancel",
+                                      style: TextStyle(
+                                          color: CupertinoColors.systemRed),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context, false);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:major_project/screens/tv_channel/multi_form.dart';
 
 class homespage extends StatefulWidget {
-  final state = _homespageState();
+  homespage({Key key}) : super(key: key);
 
   @override
-  _homespageState createState() => state;
+  _homespageState createState() => _homespageState();
 }
 
 class _homespageState extends State<homespage> {
@@ -24,66 +24,6 @@ class _homespageState extends State<homespage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CupertinoColors.extraLightBackgroundGray,
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "TimeLine Date",
-                      style: TextStyle(
-                          color: CupertinoColors.activeOrange, fontSize: 20),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 80,
-                      width: 350,
-                      child: CupertinoDatePicker(
-                        backgroundColor: CupertinoColors.white,
-                        initialDateTime: _dateTime,
-                        mode: CupertinoDatePickerMode.date,
-                        onDateTimeChanged: (dateTime) {
-                          print(dateTime);
-                          setState(() {
-                            _dateTime = dateTime;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      child: Text(
-                        "Timeline",
-                        style: TextStyle(color: CupertinoColors.activeOrange),
-                      ),
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

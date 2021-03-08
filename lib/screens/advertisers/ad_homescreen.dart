@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:major_project/screens/advertisers/ad_login.dart';
+import 'package:major_project/screens/advertisers/ad_profile.dart';
 
 class ad_homescreen extends StatefulWidget {
   ad_homescreen({Key key}) : super(key: key);
@@ -24,8 +25,7 @@ class _ad_homescreenState extends State<ad_homescreen> {
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
     Text('Search Page',
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
-    Text('Search Page',
-        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+    ad_profile(),
   ];
 
   void _onItemTapped(int index) {
@@ -93,39 +93,5 @@ class _ad_homeState extends State<ad_home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold();
-  }
-}
-
-class ad_profile extends StatefulWidget {
-  ad_profile({Key key}) : super(key: key);
-
-  @override
-  _ad_profileState createState() => _ad_profileState();
-}
-
-class _ad_profileState extends State<ad_profile> {
-  FirebaseAuth fauth = FirebaseAuth.instance;
-  FirebaseFirestore fstore = FirebaseFirestore.instance;
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Stack(
-        children: [
-          Column(
-            children: [
-              CupertinoButton(
-                child: Text("Logout"),
-                color: CupertinoColors.activeBlue,
-                onPressed: () {
-                  fauth.signOut();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ad_LoginScreen()));
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 }
