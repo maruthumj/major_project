@@ -32,7 +32,7 @@ class _ad_profileState extends State<ad_profile> {
     await FirebaseAuth.instance.signOut();
   }
 
-  get_ad_profile() async {
+  Future<void >get_ad_profile() async {
     User fuser = fauth.currentUser;
     final _uid = fuser.uid;
     DocumentSnapshot documentSnapshot =

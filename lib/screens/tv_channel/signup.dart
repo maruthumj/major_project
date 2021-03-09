@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'dart:io';
+import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as Path;
+import 'package:image_picker/image_picker.dart';
 import 'package:major_project/screens/tv_channel/loginscreen.dart';
 import 'package:major_project/screens/tv_channel/email_verification.dart';
 
@@ -126,7 +129,7 @@ class _SignupState extends State<Signup> {
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                     child: Container(
-                      height: 1350,
+                      height: 1380,
                       width: 500,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade400.withOpacity(0.5),
@@ -223,18 +226,6 @@ class _SignupState extends State<Signup> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Container(
-                                  width: 70.0,
-                                  height: 70.0,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: new DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage(
-                                          'assets/images/person_badge_plus.png'),
-                                    ),
-                                  ),
-                                ),
-                                Container(
                                   width: 250,
                                   child: TextFormField(
                                       controller: _channel_nameController,
@@ -249,18 +240,6 @@ class _SignupState extends State<Signup> {
                                             fontSize: 20),
                                       ),
                                       keyboardType: TextInputType.name),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "     Logo",
-                                  style: TextStyle(
-                                    color: CupertinoColors.activeOrange,
-                                    fontWeight: FontWeight.bold,
-                                  ),
                                 ),
                               ],
                             ),
@@ -435,6 +414,7 @@ class _SignupState extends State<Signup> {
                                         'Address': _addressController.text,
                                         'Weekly Viewers': _weeklyviewers.text,
                                         'uid': uid,
+                                        'image url': '',
                                       })
                                       .then((value) => print("channel added"))
                                       .catchError((error) => print(

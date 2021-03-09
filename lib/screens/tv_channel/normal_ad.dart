@@ -12,15 +12,24 @@ class _normal_adState extends State<normal_ad> {
   int num = 0;
 
   DateTime _dateTime = DateTime.now();
+  String text = "no value Entered";
+  String title;
   List dropdownlist = ["AM", "PM"];
   List dropdownlist2 = ["AM", "PM"];
   String valueChooser, valueChooser2;
   TextEditingController _noOfTimelineController = new TextEditingController();
   TextEditingController _startingtimeController = new TextEditingController();
   TextEditingController _endtimeController = new TextEditingController();
+  TextEditingController _priceController = new TextEditingController();
   int noOfTimeline = 0;
   final form = GlobalKey<FormState>();
   int _value = 1;
+
+  void _setText() {
+    setState(() {
+      text = title;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +78,7 @@ class _normal_adState extends State<normal_ad> {
                           print(dateTime);
                           setState(() {
                             _dateTime = dateTime;
+                            print(_dateTime);
                           });
                         },
                       ),
@@ -99,7 +109,6 @@ class _normal_adState extends State<normal_ad> {
                   children: [
                     Container(
                       width: 100,
-
                       child: CupertinoTextField(
                         controller: _noOfTimelineController,
                         placeholder: "number of Timelines",
@@ -128,108 +137,148 @@ class _normal_adState extends State<normal_ad> {
                 SingleChildScrollView(
                   child: Container(
                     height: 200,
-
-                    child: ListView(
+                    child: ListView.builder(
+                      itemCount: noOfTimeline,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                          elevation: 10,
+                          child: Stack(
+                            children: [
+                              Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: 100,
+                                        child: TextField(
+                                            decoration: InputDecoration(
+                                                labelText: "Starting time"),
+                                            keyboardType:
+                                                TextInputType.datetime,
+                                            onChanged: (value) {
+                                              title = value + "$index";
+                                            }),
+                                      ),
+                                      Container(
+                                        child: RaisedButton(
+                                          child: Text("press me"),
+                                          onPressed: () {
+                                            _setText();
+                                          },
+                                        ),
+                                      ),
+                                      Text(text),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    /* child: ListView(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       children: [
                         for (int i = 1; i <= noOfTimeline; i++)
-         
-                           Container(
+                          Container(
                             width: 250,
                             child: ListTile(
-                              leading:Text("Timeline $i"),
-                              trailing: IconButton(icon:Icon(CupertinoIcons.add,color: CupertinoColors.activeBlue,),
-                                onPressed: (){
+                              leading: Text("Timeline $i"),
+                              trailing: IconButton(
+                                icon: Icon(
+                                  CupertinoIcons.add,
+                                  color: CupertinoColors.activeBlue,
+                                ),
+                                onPressed: () {
                                   showCupertinoDialog(
                                     context: context,
                                     barrierDismissible: false,
                                     builder: (BuildContext context) =>
                                         CupertinoAlertDialog(
-
-                                          content: Stack(
-                                            overflow: Overflow.visible,
-                                            alignment: Alignment.center,
-                                            children: <Widget>[
-                                              SingleChildScrollView(
-                                                child: Container(
-                                                  height:700,
-                                                  width: double.infinity,
-                                                  child:Column(
-
-                                                    children: [
-
-                                                       Container(
-                                                        width:50,
-                                                        height: 30,
-                                                        child: DropdownButton(
-                                                            value: _value,
-                                                            items: [
-                                                              DropdownMenuItem(
-                                                                child: Text("First Item"),
-                                                                value: 1,
-                                                              ),
-                                                              DropdownMenuItem(
-                                                                child: Text("Second Item"),
-                                                                value: 2,
-                                                              ),
-
-                                                            ],
-                                                            onChanged: (value) {
-                                                              setState(() {
-                                                                _value = value;
-                                                              });
-                                                            }),
-                                                      ),
-
-                                                  ],
-                                                  ),
-                                                ),
+                                      content: Stack(
+                                        overflow: Overflow.visible,
+                                        alignment: Alignment.center,
+                                        children: <Widget>[
+                                          Column(
+                                            children: [
+                                              CupertinoTextField(
+                                                controller:
+                                                    _startingtimeController,
+                                                placeholder: "Starting Time",
+                                                keyboardType:
+                                                    TextInputType.datetime,
                                               ),
-
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              CupertinoTextField(
+                                                controller: _endtimeController,
+                                                placeholder: "Ending time",
+                                                keyboardType:
+                                                    TextInputType.datetime,
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              CupertinoTextField(
+                                                controller: _priceController,
+                                                placeholder: "Price/Second",
+                                                keyboardType:
+                                                    TextInputType.number,
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              CupertinoTextField(
+                                                controller: _priceController,
+                                                placeholder: "no of Ad Slots ",
+                                                keyboardType:
+                                                    TextInputType.number,
+                                              ),
                                             ],
-                                          ),                                          actions: [
-                                            CupertinoDialogAction(
-                                              child: Text("create"),
-                                              onPressed: () {
-
-                                                Navigator.pop(context, false);
-                                              },
-                                            ),
-                                            CupertinoDialogAction(
-                                              child: Text(
-                                                "Cancel",
-                                                style: TextStyle(
-                                                    color:
-                                                    CupertinoColors.systemRed),
-                                              ),
-                                              onPressed: () {
-                                                Navigator.pop(context, false);
-                                              },
-                                            ),
-                                          ],
+                                          ),
+                                        ],
+                                      ),
+                                      actions: [
+                                        CupertinoDialogAction(
+                                          child: Text("create"),
+                                          onPressed: () {
+                                            Navigator.pop(context, false);
+                                          },
                                         ),
+                                        CupertinoDialogAction(
+                                          child: Text(
+                                            "Cancel",
+                                            style: TextStyle(
+                                                color:
+                                                    CupertinoColors.systemRed),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context, false);
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   );
-
-
-
-                                }, ),),
-
+                                },
+                              ),
+                            ),
                           ),
-
                       ],
-                    ),
+                    ),*/
                   ),
                 ),
               ],
             ),
-
           ],
         ),
       ),
     );
-
   }
-
-
 }

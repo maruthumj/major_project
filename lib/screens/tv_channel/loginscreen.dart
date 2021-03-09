@@ -17,6 +17,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  /* @override
+  void initState() {
+    super.initState();
+    FirebaseAuth fauth = FirebaseAuth.instance;
+    User fuser = fauth.currentUser;
+    if (fuser != null) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => HomeScreen()));
+    }
+  }*/
+
   final GlobalKey<FormState> _formkey = GlobalKey();
   TextEditingController _passwordController = new TextEditingController();
   TextEditingController _resetpasswordController = new TextEditingController();

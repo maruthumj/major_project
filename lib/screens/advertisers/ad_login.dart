@@ -19,10 +19,22 @@ class ad_LoginScreen extends StatefulWidget {
 }
 
 class _ad_LoginScreenState extends State<ad_LoginScreen> {
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth fauth = FirebaseAuth.instance;
+    User fuser = fauth.currentUser;
+    if (fuser != null) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => ad_homescreen()));
+    }
+  }
+
   final GlobalKey<FormState> _formkey = GlobalKey();
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
   TextEditingController _resetpasswordController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     FirebaseAuth fauth = FirebaseAuth.instance;

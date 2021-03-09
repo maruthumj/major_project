@@ -2,9 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:ui';
+import 'dart:io';
 import 'package:major_project/screens/tv_channel/loginscreen.dart';
 
 class profile extends StatefulWidget {
@@ -23,6 +27,8 @@ class _profileState extends State<profile> {
   TextEditingController _addressController = new TextEditingController();
   TextEditingController _weeklyviewersController = new TextEditingController();
   bool _lights;
+  String imageLink;
+  File _image;
 
   FirebaseAuth fauth = FirebaseAuth.instance;
   FirebaseFirestore fstore = FirebaseFirestore.instance;
@@ -31,7 +37,7 @@ class _profileState extends State<profile> {
     await FirebaseAuth.instance.signOut();
   }
 
-  final String _uid = FirebaseAuth.instance.currentUser.uid;
+  String _uid = FirebaseAuth.instance.currentUser.uid;
   String name = '',
       phonenum = '',
       emailid = '',
@@ -121,6 +127,18 @@ class _profileState extends State<profile> {
         });
   }
 
+  Future<void> setImageurl() async {
+    QuerySnapshot queryDocumentSnapshot = await fstore
+        .collection("tv_channel_details")
+        .where("uid", isEqualTo: "$_uid")
+        .get();
+    setState(() {
+      queryDocumentSnapshot.docs.forEach((doc) {
+        doc.reference.update({"image url": imageLink});
+      });
+    });
+  }
+
   Future<void> getchanneldata() async {
     QuerySnapshot queryDocumentSnapshot = await fstore
         .collection("tv_channel_details")
@@ -131,6 +149,7 @@ class _profileState extends State<profile> {
         channel_name = doc['Channel name'];
         description = doc['Description'];
         category = doc['Category'];
+        imageLink = doc['image url'];
         language = doc['Language'];
         weekly_viewers = doc['Weekly Viewers'];
         address = doc['Address'];
@@ -191,8 +210,55 @@ class _profileState extends State<profile> {
                       ),
                       IconButton(
                         icon: Icon(CupertinoIcons.ellipsis),
-                        onPressed: () async {
-                          await actionSheetMethod();
+                        onPressed: () {
+                          showCupertinoDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) =>
+                                CupertinoAlertDialog(
+                              content: Stack(
+                                overflow: Overflow.visible,
+                                alignment: Alignment.center,
+                                children: <Widget>[
+                                  Column(
+                                    children: [
+                                      CupertinoButton(
+                                        child: Text("Logout"),
+                                        onPressed: () {
+                                          fauth.signOut();
+                                          User fuser = fauth.currentUser;
+                                          if (fuser == null) {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        LoginScreen()));
+                                          }
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              actions: [
+                                CupertinoDialogAction(
+                                  child: Text("create"),
+                                  onPressed: () {
+                                    Navigator.pop(context, false);
+                                  },
+                                ),
+                                CupertinoDialogAction(
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        color: CupertinoColors.systemRed),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context, false);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
                         },
                       ),
                     ],
@@ -215,6 +281,66 @@ class _profileState extends State<profile> {
                 ),
                 SizedBox(
                   height: 15,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (imageLink == null)
+                      Container(
+                        width: 70.0,
+                        height: 70.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                            fit: BoxFit.fill,
+                            image: AssetImage(
+                                'assets/images/person_badge_plus.png'),
+                          ),
+                        ),
+                      ),
+                    if (imageLink != null)
+                      Container(
+                        width: 70.0,
+                        height: 70.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(imageLink),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        CupertinoIcons.cloud_upload_fill,
+                        color: CupertinoColors.activeBlue,
+                      ),
+                      onPressed: () async {
+                        _image = await ImagePicker.pickImage(
+                            source: ImageSource.gallery);
+                        FirebaseStorage fs = FirebaseStorage.instance;
+                        Reference rootReference = fs.ref();
+                        Reference pictureFolderRef =
+                            rootReference.child("logo").child(channel_name);
+                        pictureFolderRef
+                            .putFile(_image)
+                            .then((storageTask) async {
+                          String link = await storageTask.ref.getDownloadURL();
+                          print("uploaded");
+                          setState(() {
+                            imageLink = link;
+                            setImageurl();
+                          });
+                          print(imageLink);
+                        });
+                      },
+                    ),
+                  ],
                 ),
                 Container(
                   color: CupertinoColors.secondarySystemBackground,
