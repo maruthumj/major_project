@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:major_project/screens/advertisers/ad_homescreen.dart';
+import 'package:major_project/main.dart';
 
 class ad_LoginScreen extends StatefulWidget {
   ad_LoginScreen({Key key}) : super(key: key);
@@ -54,7 +55,8 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
           ),
           color: CupertinoColors.activeBlue,
           onPressed: () {
-            Navigator.pop(context, false);
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => MyApp()));
           },
         ),
         backgroundColor: CupertinoColors.extraLightBackgroundGray,
@@ -73,7 +75,7 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                 child: Container(
-                  height: 320,
+                  height: 370,
                   width: 300,
                   decoration: BoxDecoration(
                     color: Colors.grey.shade400.withOpacity(0.5),

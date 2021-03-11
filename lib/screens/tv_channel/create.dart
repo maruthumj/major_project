@@ -42,7 +42,10 @@ class _createState extends State<create> {
                       child: CupertinoButton(
                         color: CupertinoColors.activeBlue,
                         child: Text("Featured Ad"),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => featured_ad()));
+                        },
                       ),
                     ),
                   ],

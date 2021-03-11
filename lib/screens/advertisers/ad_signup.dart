@@ -45,6 +45,7 @@ class _ad_SignupState extends State<ad_Signup> {
         ),
       ),
       body: SafeArea(
+       // scrollDirection: Axis.vertical,
         child: Stack(
           children: [
             Container(
@@ -58,7 +59,7 @@ class _ad_SignupState extends State<ad_Signup> {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                 child: Container(
-                  height: 440,
+                  height: 500,
                   width: 300,
                   decoration: BoxDecoration(
                     color: Colors.grey.shade400.withOpacity(0.5),

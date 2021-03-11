@@ -222,19 +222,20 @@ class _profileState extends State<profile> {
                                 children: <Widget>[
                                   Column(
                                     children: [
-                                      CupertinoButton(
-                                        child: Text("Logout"),
-                                        onPressed: () {
-                                          fauth.signOut();
-                                          User fuser = fauth.currentUser;
-                                          if (fuser == null) {
+                                      Container(
+                                        child: CupertinoButton(
+                                          child: Text("Logout"),
+                                          onPressed: () {
+                                            _signOut();
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        LoginScreen()));
-                                          }
-                                        },
-                                      )
+                                                        Scaffold(
+                                                            body:
+                                                                LoginScreen())));
+                                          },
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -281,66 +282,6 @@ class _profileState extends State<profile> {
                 ),
                 SizedBox(
                   height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (imageLink == null)
-                      Container(
-                        width: 70.0,
-                        height: 70.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage(
-                                'assets/images/person_badge_plus.png'),
-                          ),
-                        ),
-                      ),
-                    if (imageLink != null)
-                      Container(
-                        width: 70.0,
-                        height: 70.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                            fit: BoxFit.fill,
-                            image: NetworkImage(imageLink),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        CupertinoIcons.cloud_upload_fill,
-                        color: CupertinoColors.activeBlue,
-                      ),
-                      onPressed: () async {
-                        _image = await ImagePicker.pickImage(
-                            source: ImageSource.gallery);
-                        FirebaseStorage fs = FirebaseStorage.instance;
-                        Reference rootReference = fs.ref();
-                        Reference pictureFolderRef =
-                            rootReference.child("logo").child(channel_name);
-                        pictureFolderRef
-                            .putFile(_image)
-                            .then((storageTask) async {
-                          String link = await storageTask.ref.getDownloadURL();
-                          print("uploaded");
-                          setState(() {
-                            imageLink = link;
-                            setImageurl();
-                          });
-                          print(imageLink);
-                        });
-                      },
-                    ),
-                  ],
                 ),
                 Container(
                   color: CupertinoColors.secondarySystemBackground,
@@ -506,6 +447,69 @@ class _profileState extends State<profile> {
                 ),
                 SizedBox(
                   height: 15,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (imageLink == null)
+                      Container(
+                        width: 70.0,
+                        height: 70.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                            fit: BoxFit.fill,
+                            image: AssetImage(
+                                'assets/images/person_badge_plus.png'),
+                          ),
+                        ),
+                      ),
+                    if (imageLink != null)
+                      Container(
+                        width: 70.0,
+                        height: 70.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(imageLink),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        CupertinoIcons.cloud_upload_fill,
+                        color: CupertinoColors.activeBlue,
+                      ),
+                      onPressed: () async {
+                        _image = await ImagePicker.pickImage(
+                            source: ImageSource.gallery);
+                        FirebaseStorage fs = FirebaseStorage.instance;
+                        Reference rootReference = fs.ref();
+                        Reference pictureFolderRef =
+                            rootReference.child("logo").child(channel_name);
+                        pictureFolderRef
+                            .putFile(_image)
+                            .then((storageTask) async {
+                          String link = await storageTask.ref.getDownloadURL();
+                          print("uploaded");
+                          setState(() {
+                            imageLink = link;
+                            setImageurl();
+                          });
+                          print(imageLink);
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
                 ),
                 Container(
                   color: CupertinoColors.secondarySystemBackground,

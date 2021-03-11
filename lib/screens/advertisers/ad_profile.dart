@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:major_project/screens/tv_channel/loginscreen.dart';
+import 'package:major_project/screens/advertisers/ad_login.dart';
 
 class ad_profile extends StatefulWidget {
   ad_profile({Key key}) : super(key: key);
@@ -32,12 +32,13 @@ class _ad_profileState extends State<ad_profile> {
     await FirebaseAuth.instance.signOut();
   }
 
-  Future<void >get_ad_profile() async {
+  Future<void> get_ad_profile() async {
     User fuser = fauth.currentUser;
     final _uid = fuser.uid;
     DocumentSnapshot documentSnapshot =
         await fstore.collection("advertisers_details").doc(_uid).get();
     this.setState(() {
+      name = documentSnapshot.data()['Name'];
       emailid = documentSnapshot.data()['Email'];
       phonenum = documentSnapshot.data()['Phone'];
     });
@@ -45,7 +46,7 @@ class _ad_profileState extends State<ad_profile> {
 
   User fuser = FirebaseAuth.instance.currentUser;
 
-  String name = 'Maruthu', emailid = '', phonenum = '';
+  String name = '', emailid = '', phonenum = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,12 +59,15 @@ class _ad_profileState extends State<ad_profile> {
                   Container(
                     color: CupertinoColors.secondarySystemBackground,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(
                           CupertinoIcons.rectangle_stack_person_crop,
                           color: CupertinoColors.activeGreen,
                           size: 35,
+                        ),
+                        SizedBox(
+                          width: 110,
                         ),
                         Text(
                           "Profile",
@@ -129,12 +133,11 @@ class _ad_profileState extends State<ad_profile> {
                                             .collection('advertisers_details');
 
                                         await users.doc(_uid).update({
-                                          'name': _nameeditController.text
+                                          'Name': _nameeditController.text
                                         }).then((value) {
                                           print("updated successfully");
                                           _phoneeditController.clear();
                                         });
-                                        get_ad_profile();
 
                                         Navigator.pop(context, false);
                                       }),
@@ -187,23 +190,6 @@ class _ad_profileState extends State<ad_profile> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(CupertinoIcons.mail,
-                            size: 30, color: CupertinoColors.activeBlue),
-                        Text(
-                          emailid,
-                          style: TextStyle(color: CupertinoColors.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    color: CupertinoColors.secondarySystemBackground,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
                         Icon(CupertinoIcons.phone,
                             size: 30, color: CupertinoColors.activeBlue),
                         Text(
@@ -231,7 +217,7 @@ class _ad_profileState extends State<ad_profile> {
                                         final CollectionReference users = fstore
                                             .collection('advertisers_details');
                                         await users.doc(_uid).update({
-                                          'phone': _phoneeditController.text
+                                          'Phone': _phoneeditController.text
                                         }).then((value) {
                                           print("updated successfuly");
                                           _nameeditController.clear();
@@ -255,7 +241,25 @@ class _ad_profileState extends State<ad_profile> {
                             );
                           },
                         ),
+
                       ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    child: CupertinoButton(
+                      color: CupertinoColors.activeBlue,
+                      child: Text(
+                        "Logout",
+                      ),
+                      onPressed: () {
+                        _signOut();
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                Scaffold(body: ad_LoginScreen())));
+                      },
                     ),
                   ),
                 ],

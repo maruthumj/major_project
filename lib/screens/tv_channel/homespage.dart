@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:major_project/screens/tv_channel/multi_form.dart';
+import 'package:major_project/screens/tv_channel/my_normal_ad.dart';
+import 'package:major_project/screens/tv_channel/my_featured_ad.dart';
+import 'package:major_project/screens/tv_channel/my_auction_ad.dart';
 
 class homespage extends StatefulWidget {
   homespage({Key key}) : super(key: key);
@@ -10,7 +12,6 @@ class homespage extends StatefulWidget {
 }
 
 class _homespageState extends State<homespage> {
-  List<multi_form> forms = [];
   int num = 0;
   DateTime _dateTime = DateTime.now();
   List dropdownlist = ["AM", "PM"];
@@ -22,8 +23,36 @@ class _homespageState extends State<homespage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CupertinoColors.extraLightBackgroundGray,
+    return DefaultTabController(
+      length: 3,
+      initialIndex: 0,
+      child: Scaffold(
+        backgroundColor: CupertinoColors.extraLightBackgroundGray,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          bottom: TabBar(
+            tabs: [
+              Tab(
+                text: "Normal Ad",
+              ),
+              Tab(
+                text: "Featured Ad",
+              ),
+              Tab(
+                text: "Auction Ad",
+              ),
+            ],
+          ),
+        ),
+        body: TabBarView(
+
+          children: [
+            my_normal_ad(),
+            my_featured_ad(),
+            my_auction_ad(),
+          ],
+        ),
+      ),
     );
   }
 }
