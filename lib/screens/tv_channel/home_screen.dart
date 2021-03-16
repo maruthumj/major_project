@@ -8,6 +8,7 @@ import 'package:major_project/screens/tv_channel/homespage.dart';
 import 'package:major_project/screens/tv_channel/profile.dart';
 import 'package:major_project/screens/tv_channel/create.dart';
 import 'package:flutter/src/rendering/box.dart';
+import 'package:major_project/screens/tv_channel/dashboard.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -21,8 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> _widgetOptions = <Widget>[
     homespage(),
     create(),
-    Text('Search Page',
-        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+    dashboard(),
     profile(),
   ];
 
@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
               label: "Home"),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.add_circled_solid),
-            label: "Add",
+            label: "Create",
           ),
           BottomNavigationBarItem(
             icon: Icon(

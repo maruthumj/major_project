@@ -22,7 +22,7 @@ class _featured_adState extends State<featured_ad> {
   int noOfTimeline = 0;
   final form = GlobalKey<FormState>();
   int _value = 1;
-  var s;
+  String s;
   var d;
   String channel_name;
   int num = 0;
@@ -68,6 +68,8 @@ class _featured_adState extends State<featured_ad> {
             Navigator.pop(context, false);
           },
         ),
+        title: Text("         Featured Ad",
+        style: TextStyle(color: CupertinoColors.activeBlue),),
       ),
       body: SingleChildScrollView(
         child: Stack(

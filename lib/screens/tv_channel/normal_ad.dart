@@ -73,6 +73,10 @@ class _normal_adState extends State<normal_ad> {
             Navigator.pop(context, false);
           },
         ),
+        title: Text(
+          "              Normal Ad",
+          style: TextStyle(color: CupertinoColors.activeBlue),
+        ),
       ),
       body: SingleChildScrollView(
         child: Stack(

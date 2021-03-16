@@ -32,12 +32,15 @@ dependencies:
   catcher: "0.4.2"
   blur_bottom_bar: "1.0.2"
   image_picker: "0.6.7+14"
+  flutter_custom_dialog: "^1.0.20"
+  
   provider: "4.3.3"
   permission_handler: "5.1.0+2"
   date_time_picker: "^1.1.1"
   flutter:
     sdk: flutter
-  
+  video_player: "1.0.1"
+  better_player: "^0.0.61"
   
     
 
@@ -61,6 +64,8 @@ flutter:
     - assets/images/person_badge_plus.png
     - assets/images/plus_logo.png
     - assets/images/ios_sea.jpg
+    - assets/images/mount_macos.jpg
+    - assets/images/ios_leaf.jpg
     
 
   # The following line ensures that the Material Icons font is

@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:major_project/screens/advertisers/ad_login.dart';
 import 'package:major_project/screens/advertisers/ad_profile.dart';
+import 'package:major_project/screens/advertisers/ad_homespage.dart';
 
 class ad_homescreen extends StatefulWidget {
   ad_homescreen({Key key}) : super(key: key);
@@ -20,7 +21,7 @@ class _ad_homescreenState extends State<ad_homescreen> {
   FirebaseFirestore fstore = FirebaseFirestore.instance;
   int _selectedIndex = 0;
   List<Widget> _widgetOptions = <Widget>[
-    Text("Home page"),
+    homespage(),
     Text('Search Page',
         style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
     Text('Search Page',
@@ -79,19 +80,5 @@ class _ad_homescreenState extends State<ad_homescreen> {
         onTap: _onItemTapped,
       ),
     );
-  }
-}
-
-class ad_home extends StatefulWidget {
-  ad_home({Key key}) : super(key: key);
-
-  @override
-  _ad_homeState createState() => _ad_homeState();
-}
-
-class _ad_homeState extends State<ad_home> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
   }
 }

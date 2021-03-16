@@ -45,7 +45,7 @@ class _ad_SignupState extends State<ad_Signup> {
         ),
       ),
       body: SafeArea(
-       // scrollDirection: Axis.vertical,
+        // scrollDirection: Axis.vertical,
         child: Stack(
           children: [
             Container(
@@ -56,13 +56,12 @@ class _ad_SignupState extends State<ad_Signup> {
               ),
             ),
             Center(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: SingleChildScrollView(
                 child: Container(
                   height: 500,
                   width: 300,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade400.withOpacity(0.5),
+                    color: Colors.grey.shade400.withOpacity(0.7),
                     borderRadius: BorderRadius.circular(50),
                   ),
                   padding: EdgeInsets.all(16),

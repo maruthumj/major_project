@@ -20,16 +20,7 @@ class ad_LoginScreen extends StatefulWidget {
 }
 
 class _ad_LoginScreenState extends State<ad_LoginScreen> {
-  @override
-  void initState() {
-    super.initState();
-    FirebaseAuth fauth = FirebaseAuth.instance;
-    User fuser = fauth.currentUser;
-    if (fuser != null) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => ad_homescreen()));
-    }
-  }
+
 
   final GlobalKey<FormState> _formkey = GlobalKey();
   TextEditingController _emailController = new TextEditingController();
@@ -72,13 +63,12 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
               ),
             ),
             Center(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+
                 child: Container(
                   height: 370,
                   width: 300,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade400.withOpacity(0.5),
+                    color: Colors.grey.shade400.withOpacity(0.7),
                     borderRadius: BorderRadius.circular(50),
                   ),
                   padding: EdgeInsets.all(16),
@@ -200,7 +190,7 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
                   ),
                 ),
               ),
-            ),
+
           ],
         ),
       ),

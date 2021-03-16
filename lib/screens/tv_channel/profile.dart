@@ -242,12 +242,6 @@ class _profileState extends State<profile> {
                               ),
                               actions: [
                                 CupertinoDialogAction(
-                                  child: Text("create"),
-                                  onPressed: () {
-                                    Navigator.pop(context, false);
-                                  },
-                                ),
-                                CupertinoDialogAction(
                                   child: Text(
                                     "Cancel",
                                     style: TextStyle(

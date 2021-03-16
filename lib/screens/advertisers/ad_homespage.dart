@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:major_project/screens/tv_channel/my_normal_ad.dart';
-import 'package:major_project/screens/tv_channel/my_featured_ad.dart';
-import 'package:major_project/screens/tv_channel/my_auction_ad.dart';
+import 'package:major_project/screens/advertisers/ad_normal_ad.dart';
+import 'package:major_project/screens/advertisers/ad_featured_ad.dart';
+import 'package:major_project/screens/advertisers/ad_auction_ad.dart';
 
 class homespage extends StatefulWidget {
   homespage({Key key}) : super(key: key);
@@ -29,12 +29,8 @@ class _homespageState extends State<homespage> {
       child: Scaffold(
         backgroundColor: CupertinoColors.extraLightBackgroundGray,
         appBar: AppBar(
-          leading: SizedBox(width:100,),
-          title: Text("                  My Ads"),
-          backgroundColor: CupertinoColors.systemBlue,
           automaticallyImplyLeading: false,
           bottom: TabBar(
-            indicatorColor: CupertinoColors.systemBlue,
             tabs: [
               Tab(
                 text: "Normal Ad",
@@ -50,9 +46,9 @@ class _homespageState extends State<homespage> {
         ),
         body: TabBarView(
           children: [
-            my_normal_ad(),
-            my_featured_ad(),
-            my_auction_ad(),
+            ad_normal_ad(),
+            ad_featured_ad(),
+            ad_auction_ad(),
           ],
         ),
       ),

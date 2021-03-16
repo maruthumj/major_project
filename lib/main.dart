@@ -45,8 +45,7 @@ class MainScreen extends StatelessWidget {
         child: Stack(
           children: [
             Center(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+
                 child: Container(
                   height: 180,
                   width: 300,
@@ -81,7 +80,7 @@ class MainScreen extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
+
           ],
         ),
       ),

@@ -68,13 +68,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             Center(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+
                 child: Container(
                   height: 340,
                   width: 340,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade400.withOpacity(0.5),
+                    color: Colors.grey.shade400.withOpacity(0.7),
                     borderRadius: BorderRadius.circular(50),
                   ),
                   padding: EdgeInsets.all(16),
@@ -198,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-            ),
+
           ],
         ),
       ),
