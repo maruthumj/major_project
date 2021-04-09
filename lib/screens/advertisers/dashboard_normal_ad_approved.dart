@@ -195,7 +195,7 @@ class _dashboard_normal_ad_approvedState
                                       content: Text("$total"),
                                       actions: [
                                         CupertinoDialogAction(
-                                            child: Text("Yes"),
+                                            child: Text("pay"),
                                             onPressed: () async {
                                               Navigator.pop(context, false);
                                             }),
