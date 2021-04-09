@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:major_project/screens/advertisers/ad_login.dart';
 import 'package:major_project/screens/advertisers/ad_profile.dart';
 import 'package:major_project/screens/advertisers/ad_homespage.dart';
+import 'package:major_project/screens/advertisers/ad_dashboard.dart';
 
 class ad_homescreen extends StatefulWidget {
   ad_homescreen({Key key}) : super(key: key);
@@ -22,10 +23,7 @@ class _ad_homescreenState extends State<ad_homescreen> {
   int _selectedIndex = 0;
   List<Widget> _widgetOptions = <Widget>[
     homespage(),
-    Text('Search Page',
-        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
-    Text('Search Page',
-        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+    dashboard(),
     ad_profile(),
   ];
 
@@ -55,11 +53,6 @@ class _ad_homescreenState extends State<ad_homescreen> {
               ),
               title: Text(
                 "Home",
-              )),
-          BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.settings),
-              title: Text(
-                "Settings",
               )),
           BottomNavigationBarItem(
               icon: Icon(

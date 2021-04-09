@@ -131,7 +131,6 @@ class _ad_SignupState extends State<ad_Signup> {
                               print("channel added");
                             }).catchError((error) {
                               return "Failed to create Channel: $error";
-                              print("Failed to create channel: $error");
                             });
 
                             _nameController.clear();

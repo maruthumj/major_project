@@ -55,7 +55,7 @@ class _my_normal_adState extends State<my_normal_ad> {
     });
   }
 
-  Future getfeaturedads() async {
+  Future getnormalads() async {
     FirebaseFirestore fstore1 = FirebaseFirestore.instance;
     QuerySnapshot qs =
         await fstore1.collection("Normal ads{$channel_name}").get();
@@ -67,7 +67,7 @@ class _my_normal_adState extends State<my_normal_ad> {
   Widget build(BuildContext context) {
     return Container(
       child: FutureBuilder(
-          future: getfeaturedads(),
+          future: getnormalads(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
@@ -128,7 +128,7 @@ class _my_normal_adState extends State<my_normal_ad> {
                           SizedBox(
                             height: 5,
                           ),
-                          Text(data['Break starting_time']),
+                          Text(data['Break ending_time']),
                           SizedBox(
                             height: 5,
                           ),
@@ -165,6 +165,18 @@ class _my_normal_adState extends State<my_normal_ad> {
                             height: 5,
                           ),
                           Text(data['Ad minimum_length']),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "Price per Second",
+                            style:
+                                TextStyle(color: CupertinoColors.activeOrange),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(data['price']),
                         ],
                       ),
                     ),

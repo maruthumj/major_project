@@ -136,6 +136,18 @@ class _my_featured_adState extends State<my_featured_ad> {
                             height: 5,
                           ),
                           Text(data['Ad minimum_length']),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "Price per second",
+                            style:
+                                TextStyle(color: CupertinoColors.activeOrange),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(data['price']),
                         ],
                       ),
                     ),

@@ -42,6 +42,7 @@ class _featured_adState extends State<featured_ad> {
   TextEditingController _controller;
 
   TextEditingController _noOfTimelineController = new TextEditingController();
+  TextEditingController _pricepersecondController = new TextEditingController();
   TextEditingController _noOfadbreakController = new TextEditingController();
   TextEditingController _startingtimeController1 = new TextEditingController();
   TextEditingController _endtimeController1 = new TextEditingController();
@@ -68,8 +69,10 @@ class _featured_adState extends State<featured_ad> {
             Navigator.pop(context, false);
           },
         ),
-        title: Text("         Featured Ad",
-        style: TextStyle(color: CupertinoColors.activeBlue),),
+        title: Text(
+          "         Featured Ad",
+          style: TextStyle(color: CupertinoColors.activeBlue),
+        ),
       ),
       body: SingleChildScrollView(
         child: Stack(
@@ -235,6 +238,25 @@ class _featured_adState extends State<featured_ad> {
                           controller: _minimumadlengthController,
                         ),
                       ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 250,
+                        child: CupertinoTextField(
+                          placeholder: "Price per Second",
+                          keyboardType: TextInputType.text,
+                          controller: _pricepersecondController,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -288,6 +310,7 @@ class _featured_adState extends State<featured_ad> {
                                     "Ad minimum_length":
                                         _minimumadlengthController.text,
                                     "Channel name": channel_name,
+                                    "price": _pricepersecondController.text,
                                   });
 
                                   await fstore.collection("Featured ads").add({
@@ -304,6 +327,7 @@ class _featured_adState extends State<featured_ad> {
                                     "Ad minimum_length":
                                         _minimumadlengthController.text,
                                     "Channel name": channel_name,
+                                    "price": _pricepersecondController.text,
                                   });
 
                                   _adslotsController.clear();

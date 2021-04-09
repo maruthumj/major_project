@@ -21,6 +21,7 @@ class normal_ad extends StatefulWidget {
 
 class _normal_adState extends State<normal_ad> {
   int num = 0;
+  int _selectedValue = 1;
   var s;
   int adnum;
   DateTime _dateTime = DateTime.now();
@@ -30,17 +31,21 @@ class _normal_adState extends State<normal_ad> {
   List dropdownlist2 = ["AM", "PM"];
   List dropdownlist3 = ["AM", "PM"];
   List dropdownlist4 = ["AM", "PM"];
+  String val1;
+  List maximum_ads = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
   String valueChooser, valueChooser2, valueChooser3, valueChooser4;
+  int max_ad_chooser;
 
   FirebaseAuth fauth = FirebaseAuth.instance;
   FirebaseFirestore fstore = FirebaseFirestore.instance;
   TextEditingController _controller;
-
   TextEditingController _noOfTimelineController = new TextEditingController();
   TextEditingController _noOfadbreakController = new TextEditingController();
   TextEditingController _startingtimeController1 = new TextEditingController();
   TextEditingController _endtimeController1 = new TextEditingController();
   TextEditingController _breakstartingtimeController1 =
+      new TextEditingController();
+  TextEditingController _pricepersecondController1 =
       new TextEditingController();
   TextEditingController _breakendtimeController1 = new TextEditingController();
   TextEditingController _priceController1 = new TextEditingController();
@@ -330,12 +335,78 @@ class _normal_adState extends State<normal_ad> {
                 ),
                 SizedBox(height: 20),
                 Container(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 150,
+                        child: Text("Maximum ads per user"),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Container(
+                        width: 100,
+                        height: 60,
+                        child: CupertinoPicker(
+                          backgroundColor: Colors.white,
+                          itemExtent: 30,
+                          scrollController:
+                              FixedExtentScrollController(initialItem: 1),
+                          children: [
+                            for (val1 in maximum_ads)
+                              Text(
+                                val1,
+                                style: TextStyle(
+                                  color: (_selectedValue ==
+                                          maximum_ads.indexOf(val1)
+                                      ? CupertinoColors.activeBlue
+                                      : CupertinoColors.black),
+                                ),
+                              ),
+                          ],
+                          onSelectedItemChanged: (value) {
+                            setState(() {
+                              _selectedValue = value;
+                              print(_selectedValue);
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 250,
+                        child: CupertinoTextField(
+                          placeholder: "Price per second",
+                          keyboardType: TextInputType.number,
+                          controller: _pricepersecondController1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
                   child: CupertinoButton(
                     child: Text(
                       "Generate Ad Slots",
                     ),
                     color: CupertinoColors.activeBlue,
                     onPressed: () {
+                      int mxnum = _selectedValue + 1;
                       showCupertinoDialog(
                         context: context,
                         barrierDismissible: false,
@@ -365,17 +436,27 @@ class _normal_adState extends State<normal_ad> {
                                       .add({
                                     "Date": s,
                                     "Timeline starting_time":
-                                        _startingtimeController1.text,
+                                        _startingtimeController1.text +
+                                            "" +
+                                            valueChooser,
                                     "Timeline ending_time":
-                                        _endtimeController1.text,
+                                        _endtimeController1.text +
+                                            "" +
+                                            valueChooser2,
                                     "Break starting_time":
-                                        _breakstartingtimeController1.text,
+                                        _breakstartingtimeController1.text +
+                                            "" +
+                                            valueChooser3,
                                     "Break ending_time":
-                                        _breakendtimeController1.text,
+                                        _breakendtimeController1.text +
+                                            "" +
+                                            valueChooser4,
                                     "Ad slots": _adslotsController.text,
                                     "Ad minimum_length":
                                         _minimumadlengthController.text,
                                     "Channel name": channel_name,
+                                    "Maximum ads": mxnum.toString(),
+                                    "price": _pricepersecondController1.text,
                                   });
 
                                   await fstore.collection("Normal ads").add({
@@ -400,6 +481,8 @@ class _normal_adState extends State<normal_ad> {
                                     "Ad minimum_length":
                                         _minimumadlengthController.text,
                                     "Channel name": channel_name,
+                                    "Maximum ads": mxnum.toString(),
+                                    "price": _pricepersecondController1.text,
                                   });
                                   _breakendtimeController1.clear();
                                   _breakstartingtimeController1.clear();

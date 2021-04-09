@@ -8,6 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:ui';
 import 'dart:io';
+import 'package:major_project/screens/advertisers/video_items.dart';
+import 'package:video_player/video_player.dart';
+import 'package:number_inc_dec/number_inc_dec.dart';
 
 class ad_featured_ad extends StatefulWidget {
   ad_featured_ad({Key key}) : super(key: key);
@@ -17,20 +20,25 @@ class ad_featured_ad extends StatefulWidget {
 }
 
 class _ad_featured_adState extends State<ad_featured_ad> {
-  File _ad_video;
-  String _videoLink;
-  String cname;
-
+  TextEditingController num_of_ads = new TextEditingController();
+  TextEditingController ad_quantity_controller = new TextEditingController();
+  FirebaseAuth fauth = FirebaseAuth.instance;
+  int max_num, max_ads1;
+  int channel_max_num;
   String imageLink = '',
       Language = '',
       Weakly_viewers = '',
       Description = '',
       Category = '',
       Address = '';
-  FirebaseAuth fauth = FirebaseAuth.instance;
   String timestamp;
+  bool visibility = false;
+  FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   FirebaseFirestore fstore = FirebaseFirestore.instance;
   int _myDoc;
+  File _ad_video;
+  String _videoLink;
+  String cname, name, phonenum, emailid;
   String channel_name = '';
   String starting_time = '',
       ending_time = '',
@@ -41,13 +49,38 @@ class _ad_featured_adState extends State<ad_featured_ad> {
       adslots = '',
       date = '';
   int num1;
-  String link1 = " ";
+  int maxads;
   @override
   void initState() {
     super.initState();
-    if (_videoLink != null) {
-      link1 = _videoLink;
-    }
+    this.getadvertiserdeatils();
+    this.getchannelname();
+  }
+
+  Future<void> getchannelname() async {
+    QuerySnapshot queryshot = await fstore
+        .collection("Normal ads")
+        .where("Channel name", isEqualTo: "$channel_name")
+        .get();
+    setState(() {
+      queryshot.docs.forEach((doc) {
+        imageLink = doc['image link'];
+
+        print(imageLink);
+      });
+    });
+  }
+
+  Future<void> getadvertiserdeatils() async {
+    User fuser = fauth.currentUser;
+    final _uid = fuser.uid;
+    DocumentSnapshot documentSnapshot =
+        await fstore.collection("advertisers_details").doc(_uid).get();
+    this.setState(() {
+      name = documentSnapshot.data()['Name'];
+      emailid = documentSnapshot.data()['Email'];
+      phonenum = documentSnapshot.data()['Phone'];
+    });
   }
 
   Future getfeaturedads() async {
@@ -73,7 +106,7 @@ class _ad_featured_adState extends State<ad_featured_ad> {
                 itemBuilder: (_, index) {
                   DocumentSnapshot data = snapshot.data[index];
                   return Container(
-                    height: 500,
+                    height: 550,
                     child: Card(
                       elevation: 5,
                       child: Column(
@@ -326,53 +359,159 @@ class _ad_featured_adState extends State<ad_featured_ad> {
                             height: 5,
                           ),
                           Text(data['Ad minimum_length']),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Text(
+                            "Price per second",
+                            style:
+                                TextStyle(color: CupertinoColors.activeOrange),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(data['price']),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Text(
+                            "Upload Ad Video",
+                            style:
+                                TextStyle(color: CupertinoColors.activeOrange),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                child: IconButton(
+                                  color: CupertinoColors.activeBlue,
+                                  icon: Icon(CupertinoIcons.cloud_upload_fill),
+                                  onPressed: () async {
+                                    _ad_video = await ImagePicker.pickVideo(
+                                        source: ImageSource.gallery);
+                                    FirebaseStorage fs =
+                                        FirebaseStorage.instance;
+                                    Reference rootReference = fs.ref();
+                                    User fuser = fauth.currentUser;
+                                    final email = fuser.email;
+                                    Reference videoFolderReference =
+                                        rootReference
+                                            .child("featured ad videos")
+                                            .child(data['Channel name'])
+                                            .child(emailid)
+                                            .child(data['Date'] +
+                                                " " +
+                                                data['Timeline starting_time'] +
+                                                " - " +
+                                                data['Timeline ending_time'])
+                                            .child("ad");
+                                    videoFolderReference
+                                        .putFile(_ad_video)
+                                        .then((storageTask) async {
+                                      String link = (await videoFolderReference
+                                              .getDownloadURL())
+                                          .toString();
+
+                                      print("uploaded");
+                                      setState(() {
+                                        _videoLink = link;
+                                        print("Link " + _videoLink);
+                                        visibility = false;
+                                      });
+                                    });
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Offstage(
+                                offstage: visibility,
+                                child: Container(
+                                  child: IconButton(
+                                    icon: Icon(CupertinoIcons.play_circle_fill),
+                                    color: CupertinoColors.activeBlue,
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) => video_play(
+                                                  value: _videoLink)));
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
                           Container(
                             child: CupertinoButton(
                               color: CupertinoColors.activeBlue,
-                              child: Text("upload ad video"),
-                              onPressed: () async {
-                                _ad_video = await ImagePicker.pickVideo(
-                                    source: ImageSource.gallery);
-                                FirebaseStorage fs = FirebaseStorage.instance;
-                                Reference rootReference = fs.ref();
-                                User fuser = fauth.currentUser;
-                                final email = fuser.email;
-                                Reference videoFolderReference = rootReference
-                                    .child("featured ad videos")
-                                    .child(cname)
-                                    .child(email)
-                                    .child(date +
-                                        " " +
-                                        starting_time +
-                                        " " +
-                                        ending_time)
-                                    .child("ad");
-                                videoFolderReference
-                                    .putFile(_ad_video)
-                                    .then((storageTask) async {
-                                  String link =
-                                      await storageTask.ref.getDownloadURL();
-                                  print("uploaded");
-                                  setState(() async {
-                                    _videoLink = link;
-                                    CollectionReference normal_ad_collection =
-                                        FirebaseFirestore.instance.collection(
-                                            "featured_ad_video{$cname}");
+                              child: Text("Advertise"),
+                              onPressed: () {
+                                showCupertinoDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) =>
+                                      CupertinoAlertDialog(
+                                    title: CupertinoTextField(
+                                      placeholder: "Ad Quantity",
+                                      keyboardType: TextInputType.number,
+                                      controller: ad_quantity_controller,
+                                    ),
+                                    actions: [
+                                      CupertinoDialogAction(
+                                          child: Text(
+                                            'Place ads',
+                                            style: TextStyle(
+                                                color:
+                                                    CupertinoColors.activeBlue),
+                                          ),
+                                          onPressed: () async {
+                                            max_num = int.parse(
+                                                ad_quantity_controller.text);
 
-                                    await normal_ad_collection.add({
-                                      'video_link': _videoLink,
-                                      'sender': email,
-                                      'date': date,
-                                      'timeline starting_time': starting_time,
-                                      'timeline ending_time': ending_time,
-                                    }).then((value) {
-                                      print("channel added");
-                                    }).catchError((error) {
-                                      return "Failed to create Channel: $error";
-                                    });
-                                  });
-                                  print("Link " + _videoLink);
-                                });
+                                            await fstore
+                                                .collection(
+                                                    "featured_ad_request{" +
+                                                        data['Channel name'] +
+                                                        "}")
+                                                .add({
+                                              "ad_quantity":
+                                                  ad_quantity_controller.text,
+                                              "sender": name,
+                                              "receiver": data['Channel name'],
+                                              "sender_email": emailid,
+                                              "sender_phone": phonenum,
+                                              "timeline": data[
+                                                      'Timeline starting_time'] +
+                                                  " - " +
+                                                  data['Timeline ending_time'],
+                                              "date": data['Date'],
+                                              "link": _videoLink,
+                                              "Ad slots": data['Ad slots'],
+                                              "price": data['price']
+                                            });
+                                            ad_quantity_controller.clear();
+                                            Navigator.pop(context, false);
+                                          }),
+                                      CupertinoDialogAction(
+                                        child: Text(
+                                          'Cancel',
+                                          style: TextStyle(
+                                              color: CupertinoColors.systemRed),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context, false);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
                               },
                             ),
                           ),
@@ -387,6 +526,49 @@ class _ad_featured_adState extends State<ad_featured_ad> {
               );
             }
           }),
+    );
+  }
+}
+
+class video_play extends StatefulWidget {
+  String value;
+  video_play({this.value});
+
+  @override
+  _video_playState createState() => _video_playState(value);
+}
+
+class _video_playState extends State<video_play> {
+  String value;
+  _video_playState(this.value);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: CupertinoColors.extraLightBackgroundGray,
+        automaticallyImplyLeading: false,
+        title: Text(
+          'Video Ad',
+          style: TextStyle(color: CupertinoColors.activeBlue),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(CupertinoIcons.chevron_back),
+          color: CupertinoColors.activeBlue,
+          onPressed: () {
+            Navigator.pop(context, false);
+          },
+        ),
+      ),
+      body: ListView(
+        children: <Widget>[
+          VideoItems(
+            videoPlayerController: VideoPlayerController.network(value),
+            looping: false,
+            autoplay: false,
+          ),
+        ],
+      ),
     );
   }
 }
