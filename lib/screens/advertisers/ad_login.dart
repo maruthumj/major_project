@@ -20,8 +20,6 @@ class ad_LoginScreen extends StatefulWidget {
 }
 
 class _ad_LoginScreenState extends State<ad_LoginScreen> {
-
-
   final GlobalKey<FormState> _formkey = GlobalKey();
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
@@ -46,8 +44,8 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
           ),
           color: CupertinoColors.activeBlue,
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => MyApp()));
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => MyApp()));
           },
         ),
         backgroundColor: CupertinoColors.extraLightBackgroundGray,
@@ -63,134 +61,130 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
               ),
             ),
             Center(
-
-                child: Container(
-                  height: 370,
-                  width: 300,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade400.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  padding: EdgeInsets.all(16),
-                  child: Form(
-                    key: _formkey,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            controller: _emailController,
-                            decoration: InputDecoration(labelText: "Email"),
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (value) {
-                              if (value.isEmpty || !value.contains('@')) {
-                                return 'Invalid Email';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {},
+              child: Container(
+                height: 370,
+                width: 300,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade400.withOpacity(0.7),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                padding: EdgeInsets.all(16),
+                child: Form(
+                  key: _formkey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(labelText: "Email"),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Invalid Email';
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(labelText: 'password'),
+                          obscureText: true,
+                          controller: _passwordController,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Invalid Password';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 30),
+                        CupertinoButton(
+                          child: Text(
+                            "Login",
                           ),
-                          TextFormField(
-                            decoration: InputDecoration(labelText: 'password'),
-                            obscureText: true,
-                            controller: _passwordController,
-                            validator: (value) {
-                              if (value.isEmpty ||
-                                  value != _passwordController.text) {
-                                return 'Invalid Password';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {},
-                          ),
-                          SizedBox(height: 30),
-                          CupertinoButton(
-                            child: Text(
-                              "Login",
+                          color: CupertinoColors.activeBlue,
+                          onPressed: () async {
+                            FirebaseAuth.instance.signInWithEmailAndPassword(
+                                email: _emailController.text,
+                                password: _passwordController.text);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ad_homescreen()));
+                          },
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(height: 10),
+                            Text(
+                              "Don't Have an Account?",
+                              style: TextStyle(
+                                  fontSize: 15, color: CupertinoColors.black),
                             ),
-                            color: CupertinoColors.activeBlue,
-                            onPressed: () async {
-                              FirebaseAuth.instance.signInWithEmailAndPassword(
-                                  email: _emailController.text,
-                                  password: _passwordController.text);
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ad_homescreen()));
-                            },
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(height: 10),
-                              Text(
-                                "Don't Have an Account?",
-                                style: TextStyle(
-                                    fontSize: 15, color: CupertinoColors.black),
-                              ),
-                              CupertinoButton(
-                                child: Text("Sign Up",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold)),
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => ad_Signup()));
-                                },
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CupertinoButton(
-                                child: Text(
-                                  "Forgot Password?",
+                            CupertinoButton(
+                              child: Text("Sign Up",
                                   style: TextStyle(
-                                      decoration: TextDecoration.underline),
-                                ),
-                                onPressed: () {
-                                  showCupertinoDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context) =>
-                                        CupertinoAlertDialog(
-                                      content: CupertinoTextField(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => ad_Signup()));
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CupertinoButton(
+                              child: Text(
+                                "Forgot Password?",
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline),
+                              ),
+                              onPressed: () {
+                                showCupertinoDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) =>
+                                      CupertinoAlertDialog(
+                                    content: Form(
+                                      child: CupertinoTextField(
                                         placeholder: "Email",
                                         controller: _resetpasswordController,
                                       ),
-                                      actions: [
-                                        CupertinoDialogAction(
-                                          child: Text("Reset Password"),
-                                          onPressed: () {
-                                            fauth.sendPasswordResetEmail(
-                                                email: _resetpasswordController
-                                                    .text);
-                                            _resetpasswordController.clear();
-                                            Navigator.pop(context, false);
-                                          },
-                                        ),
-                                        CupertinoDialogAction(
-                                          child: Text(
-                                            "Cancel",
-                                            style: TextStyle(
-                                                color:
-                                                    CupertinoColors.systemRed),
-                                          ),
-                                          onPressed: () {
-                                            Navigator.pop(context, false);
-                                          },
-                                        ),
-                                      ],
                                     ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                                    actions: [
+                                      CupertinoDialogAction(
+                                        child: Text("Reset Password"),
+                                        onPressed: () {
+                                          fauth.sendPasswordResetEmail(
+                                              email: _resetpasswordController
+                                                  .text);
+                                          _resetpasswordController.clear();
+                                          Navigator.pop(context, false);
+                                        },
+                                      ),
+                                      CupertinoDialogAction(
+                                        child: Text(
+                                          "Cancel",
+                                          style: TextStyle(
+                                              color: CupertinoColors.systemRed),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context, false);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-
+            ),
           ],
         ),
       ),

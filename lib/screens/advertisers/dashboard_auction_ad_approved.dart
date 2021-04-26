@@ -10,6 +10,7 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:major_project/screens/advertisers/dashboard_auction_ad_approved.dart';
 import 'package:major_project/screens/advertisers/dashboard_auction_ad_declined.dart';
 import 'package:video_player/video_player.dart';
+import 'package:major_project/screens/advertisers/bidding.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:ui';
@@ -62,7 +63,7 @@ class _dashboard_auction_ad_approvedState
   Future getapprovalrequest() async {
     FirebaseFirestore fstore1 = FirebaseFirestore.instance;
     QuerySnapshot qs = await fstore1
-        .collection("featured ad response{$emailid} approved")
+        .collection("auction ad response{$emailid} approved")
         .get();
 
     return qs.docs;
@@ -167,11 +168,26 @@ class _dashboard_auction_ad_approvedState
                             SizedBox(
                               height: 10,
                             ),
+                            Text(
+                              "Base Price",
+                              style: TextStyle(
+                                  color: CupertinoColors.activeOrange),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(data['base price']),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Container(
                               child: CupertinoButton(
                                 child: Text("Bid"),
                                 color: CupertinoColors.activeBlue,
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => bidding()));
+                                },
                               ),
                             ),
                           ],

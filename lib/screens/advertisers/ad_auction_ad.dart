@@ -116,7 +116,6 @@ class _ad_auction_adState extends State<ad_auction_ad> {
                 itemBuilder: (_, index) {
                   DocumentSnapshot data = snapshot.data[index];
 
-
                   // maxads = int.parse(data['Maximum ads']);
                   //max_ads1 = int.parse(data['Maximum ads']);
                   return Container(
@@ -144,8 +143,11 @@ class _ad_auction_adState extends State<ad_auction_ad> {
                                   if (formatted == data['ending_date_time']) {
                                     var _query = fstore
                                         .collection('Auction ads')
-                                        .where('ending_date_time', isEqualTo: formatted);
-                                    _query.get().then((QuerySnapshot querySnapshot) {
+                                        .where('ending_date_time',
+                                            isEqualTo: formatted);
+                                    _query
+                                        .get()
+                                        .then((QuerySnapshot querySnapshot) {
                                       querySnapshot.docs.forEach((doc) {
                                         doc.reference.delete();
                                       });
@@ -604,7 +606,9 @@ class _ad_auction_adState extends State<ad_auction_ad> {
                                                       data['Break ending_time'],
                                               "date": data['Date'],
                                               "link": _videoLink,
-                                              "Ad slots": data['Ad_slot number'],
+                                              "Ad slots":
+                                                  data['Ad_slot number'],
+                                              "base price": data['base price'],
                                             });
                                             ad_quantity_controller.clear();
                                             Navigator.pop(context, false);
