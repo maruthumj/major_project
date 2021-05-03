@@ -13,6 +13,12 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:ui';
 import 'dart:io';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:dio/dio.dart';
+import 'package:ext_storage/ext_storage.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:random_string/random_string.dart';
+import 'dart:math' show Random;
 
 class dashboard_normal_ad extends StatefulWidget {
   dashboard_normal_ad({Key key}) : super(key: key);
@@ -24,9 +30,12 @@ class dashboard_normal_ad extends StatefulWidget {
 class _dashboard_normal_adState extends State<dashboard_normal_ad> {
   FirebaseAuth fauth = FirebaseAuth.instance;
   String timestamp;
+  var dio = Dio();
   FirebaseFirestore fstore = FirebaseFirestore.instance;
   TextEditingController _declineController = new TextEditingController();
   TextEditingController _acceptController = new TextEditingController();
+  int total_price;
+  String inc, inc2;
   String channel_name = '';
   String starting_time = '',
       ending_time = '',
@@ -37,12 +46,23 @@ class _dashboard_normal_adState extends State<dashboard_normal_ad> {
       adslots = '',
       date = '';
   int num1;
-
+  int list_length = 0;
+  int int_price_per_second, int_duration;
+  int ii = 0, jj = 0;
   int _myDoc;
+  String duration;
   @override
   void initState() {
     super.initState();
     this.getchannelname();
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Future<void> getchannelname() async {
@@ -70,6 +90,8 @@ class _dashboard_normal_adState extends State<dashboard_normal_ad> {
     return qs.docs;
   }
 
+  void _requestDownload(String link) async {}
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -84,9 +106,24 @@ class _dashboard_normal_adState extends State<dashboard_normal_ad> {
               return ListView.builder(
                   itemCount: snapshot.data.length,
                   itemBuilder: (_, index) {
+                    var lst = new List();
+
                     DocumentSnapshot data = snapshot.data[index];
+
+                    int_price_per_second = int.parse(data['ad_quantity']) *
+                        int.parse(data['price']);
+                    VideoPlayerController _vdo =
+                        new VideoPlayerController.network(data['link']);
+                    _vdo.initialize().then((_) {
+                      duration = _vdo.value.duration.inSeconds.toString();
+
+                      total_price =
+                          _vdo.value.duration.inSeconds * int_price_per_second;
+                      inc = total_price.toString();
+                    });
+
                     return Container(
-                      height: 550,
+                      height: 610,
                       child: Card(
                         elevation: 5,
                         child: Column(
@@ -260,8 +297,11 @@ class _dashboard_normal_adState extends State<dashboard_normal_ad> {
                               height: 10,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
+                                SizedBox(
+                                  width: 50,
+                                ),
                                 Container(
                                   child: Text(
                                     "Play Video",
@@ -284,10 +324,56 @@ class _dashboard_normal_adState extends State<dashboard_normal_ad> {
                                                 value: data['link'])));
                                   },
                                 ),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                Container(
+                                  child: Text(
+                                    "Download Video",
+                                    style: TextStyle(
+                                        color: CupertinoColors.activeBlue),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                IconButton(
+                                  color: CupertinoColors.activeBlue,
+                                  icon: Icon(
+                                    CupertinoIcons.arrow_down_circle_fill,
+                                  ),
+                                  onPressed: () async {
+                                    await _launchURL(data['link']);
+                                  },
+                                ),
                               ],
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 5,
+                            ),
+                            Text(
+                              "Video length",
+                              style: TextStyle(
+                                  color: CupertinoColors.activeOrange),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(duration + " Seconds"),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "Total Price",
+                              style: TextStyle(
+                                  color: CupertinoColors.activeOrange),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(inc),
+                            SizedBox(
+                              height: 5,
                             ),
                             Container(
                               child: CupertinoButton(
@@ -387,7 +473,7 @@ class _dashboard_normal_adState extends State<dashboard_normal_ad> {
                                                     data['break_time'],
                                                 "date": data['date'],
                                                 "quantity": data['ad_quantity'],
-                                                "price": data['price']
+                                                "price": total_price.toString(),
                                               });
                                               Navigator.pop(context, false);
                                             }),

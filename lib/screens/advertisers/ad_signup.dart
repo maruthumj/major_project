@@ -20,10 +20,17 @@ class _ad_SignupState extends State<ad_Signup> {
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _nameController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
+  TextEditingController _confirmpasswordController =
+      new TextEditingController();
   TextEditingController _companyController = new TextEditingController();
   TextEditingController _phoneController = new TextEditingController();
   final _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  bool _validatename = false,
+      _validatepassword = false,
+      _validatephone = false,
+      _validateemail = false,
+      _validateconfirmpassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +65,7 @@ class _ad_SignupState extends State<ad_Signup> {
             Center(
               child: SingleChildScrollView(
                 child: Container(
-                  height: 500,
+                  height: 550,
                   width: 300,
                   decoration: BoxDecoration(
                     color: Colors.grey.shade400.withOpacity(0.7),
@@ -71,12 +78,20 @@ class _ad_SignupState extends State<ad_Signup> {
                       children: [
                         TextFormField(
                           controller: _nameController,
-                          decoration: InputDecoration(labelText: "Name"),
+                          decoration: InputDecoration(
+                              errorText: _validatename
+                                  ? 'Value Can\'t Be Empty'
+                                  : null,
+                              labelText: "Name"),
                           keyboardType: TextInputType.visiblePassword,
                         ),
                         TextFormField(
                           controller: _emailController,
-                          decoration: InputDecoration(labelText: "Email"),
+                          decoration: InputDecoration(
+                              errorText: _validateemail
+                                  ? 'Value Can\'t Be Empty'
+                                  : null,
+                              labelText: "Email"),
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value.isEmpty || !value.contains('@')) {
@@ -88,20 +103,31 @@ class _ad_SignupState extends State<ad_Signup> {
                         ),
                         TextFormField(
                           controller: _phoneController,
-                          decoration:
-                              InputDecoration(labelText: "Phone Number"),
+                          decoration: InputDecoration(
+                              errorText: _validatephone
+                                  ? 'Value Can\'t Be Empty'
+                                  : null,
+                              labelText: "Phone Number"),
                           keyboardType: TextInputType.phone,
                           obscureText: false,
                         ),
                         TextFormField(
                           controller: _passwordController,
-                          decoration: InputDecoration(labelText: "Password"),
+                          decoration: InputDecoration(
+                              errorText: _validatepassword
+                                  ? 'Value Can\'t Be Empty'
+                                  : null,
+                              labelText: "Password"),
                           keyboardType: TextInputType.visiblePassword,
                           obscureText: true,
                         ),
                         TextFormField(
-                          decoration:
-                              InputDecoration(labelText: "Confirm Password"),
+                          controller: _confirmpasswordController,
+                          decoration: InputDecoration(
+                              errorText: _validateconfirmpassword
+                                  ? 'Value Can\'t Be Empty'
+                                  : null,
+                              labelText: "Confirm Password"),
                           keyboardType: TextInputType.visiblePassword,
                           obscureText: true,
                         ),
@@ -112,6 +138,23 @@ class _ad_SignupState extends State<ad_Signup> {
                             "Create Account",
                           ),
                           onPressed: () async {
+                            setState(() {
+                              _nameController.text.isEmpty
+                                  ? _validatename = true
+                                  : _validatename = false;
+                              _emailController.text.isEmpty
+                                  ? _validateemail = true
+                                  : _validateemail = false;
+                              _passwordController.text.isEmpty
+                                  ? _validatepassword = true
+                                  : _validatepassword = false;
+                              _phoneController.text.isEmpty
+                                  ? _validatephone = true
+                                  : _validatephone = false;
+                              _confirmpasswordController.text.isEmpty
+                                  ? _validatename = true
+                                  : _validatename = false;
+                            });
                             FirebaseAuth fauth = FirebaseAuth.instance;
                             fauth.createUserWithEmailAndPassword(
                                 email: _emailController.text,

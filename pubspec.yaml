@@ -33,17 +33,21 @@ dependencies:
   blur_bottom_bar: "1.0.2"
   image_picker: "0.6.7+14"
   flutter_custom_dialog: "^1.0.20"
-  
+  dio: "^3.0.10"
+  dependencies:
+  random_string: "^2.1.0"
+  ext_storage: "^1.0.3"
   provider: "4.3.3"
   permission_handler: "5.1.0+2"
   date_time_picker: "^1.1.1"
+  url_launcher: "^5.7.10"
   flutter:
     sdk: flutter
   video_player: "^1.0.1"
   number_inc_dec: "^0.6.6"
   chewie: "^0.12.2"
   http: "^0.12.2"
-  
+  flutter_downloader: "^1.5.2"
   
     
 

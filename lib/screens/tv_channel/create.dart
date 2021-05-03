@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:major_project/screens/tv_channel/normal_ad.dart';
 import 'package:major_project/screens/tv_channel/featured_ad.dart';
 import 'package:major_project/screens/tv_channel/auction_ad.dart';
+
 class create extends StatefulWidget {
   create({Key key}) : super(key: key);
 
@@ -49,7 +50,7 @@ class _createState extends State<create> {
                       ),
                     ),
                     SizedBox(height: 50),
-                    Container(
+                    /* Container(
                       child: CupertinoButton(
                         color: CupertinoColors.activeBlue,
                         child: Text("Auction Ad"),
@@ -58,7 +59,7 @@ class _createState extends State<create> {
                               builder: (context) => auction_ad()));
                         },
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               ),

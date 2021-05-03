@@ -17,22 +17,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  /* @override
-  void initState() {
-    super.initState();
-    FirebaseAuth fauth = FirebaseAuth.instance;
-    User fuser = fauth.currentUser;
-    if (fuser != null) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => HomeScreen()));
-    }
-  }*/
-
   final GlobalKey<FormState> _formkey = GlobalKey();
   TextEditingController _passwordController = new TextEditingController();
   TextEditingController _resetpasswordController = new TextEditingController();
   TextEditingController _emailController = new TextEditingController();
-
+  bool _validateemail = false, _validatepassword = false;
   @override
   Widget build(BuildContext context) {
     FirebaseAuth fauth = FirebaseAuth.instance;
@@ -82,7 +71,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       children: [
                         TextFormField(
-                          decoration: InputDecoration(labelText: "Email"),
+                          decoration: InputDecoration(
+                            labelText: "Email",
+                            errorText:
+                                _validateemail ? 'Value Can\'t Be Empty' : null,
+                          ),
                           keyboardType: TextInputType.emailAddress,
                           controller: _emailController,
                           validator: (value) {
@@ -93,7 +86,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                         ),
                         TextFormField(
-                          decoration: InputDecoration(labelText: 'password'),
+                          decoration: InputDecoration(
+                            labelText: 'password',
+                            errorText: _validatepassword
+                                ? 'Value Can\'t Be Empty'
+                                : null,
+                          ),
                           obscureText: true,
                           controller: _passwordController,
                           validator: (value) {
@@ -110,6 +108,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           color: CupertinoColors.activeBlue,
                           onPressed: () async {
+                            setState(() {
+                              _emailController.text.isEmpty
+                                  ? _validateemail = true
+                                  : _validateemail = false;
+                              _passwordController.text.isEmpty
+                                  ? _validatepassword = true
+                                  : _validatepassword = false;
+                            });
                             var _user = await FirebaseAuth.instance
                                 .signInWithEmailAndPassword(
                                     email: _emailController.text,

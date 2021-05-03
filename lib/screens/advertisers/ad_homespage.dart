@@ -24,7 +24,7 @@ class _homespageState extends State<homespage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       initialIndex: 0,
       child: Scaffold(
         backgroundColor: CupertinoColors.extraLightBackgroundGray,
@@ -38,9 +38,9 @@ class _homespageState extends State<homespage> {
               Tab(
                 text: "Featured Ad",
               ),
-              Tab(
+              /*   Tab(
                 text: "Auction Ad",
-              ),
+              ),*/
             ],
           ),
         ),
@@ -48,7 +48,7 @@ class _homespageState extends State<homespage> {
           children: [
             ad_normal_ad(),
             ad_featured_ad(),
-            ad_auction_ad(),
+            // ad_auction_ad(),
           ],
         ),
       ),

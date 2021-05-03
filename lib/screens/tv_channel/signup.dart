@@ -22,7 +22,14 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   final GlobalKey<FormState> _formkey = GlobalKey();
-
+  bool _validatename = false,
+      _validateemail = false,
+      _validatepassword = false,
+      _validatecname = false,
+      _validatecdesc = false,
+      _validateweeklyviewers = false,
+      _validatephone = false,
+      _validateaddress = false;
   FirebaseAuth auth = FirebaseAuth.instance;
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _resetpasswordController = new TextEditingController();
@@ -127,7 +134,7 @@ class _SignupState extends State<Signup> {
               children: [
                 Center(
                   child: Container(
-                    height: 1380,
+                    height: 1500,
                     width: 500,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade400.withOpacity(0.5),
@@ -152,6 +159,9 @@ class _SignupState extends State<Signup> {
                           TextFormField(
                             controller: _nameController,
                             decoration: InputDecoration(
+                                errorText: _validatename
+                                    ? 'Value Can\'t Be Empty'
+                                    : null,
                                 labelText: "Name",
                                 labelStyle:
                                     TextStyle(color: CupertinoColors.black)),
@@ -160,6 +170,9 @@ class _SignupState extends State<Signup> {
                           TextFormField(
                             controller: _emailController,
                             decoration: InputDecoration(
+                                errorText: _validateemail
+                                    ? 'Value Can\'t Be Empty'
+                                    : null,
                                 labelText: "Email",
                                 labelStyle:
                                     TextStyle(color: CupertinoColors.black)),
@@ -169,6 +182,9 @@ class _SignupState extends State<Signup> {
                           TextFormField(
                             controller: _phoneController,
                             decoration: InputDecoration(
+                                errorText: _validatephone
+                                    ? 'Value Can\'t Be Empty'
+                                    : null,
                                 labelText: 'Phone Number',
                                 labelStyle:
                                     TextStyle(color: CupertinoColors.black)),
@@ -176,6 +192,9 @@ class _SignupState extends State<Signup> {
                           ),
                           TextFormField(
                             decoration: InputDecoration(
+                              errorText: _validatepassword
+                                  ? 'Value Can\'t Be Empty'
+                                  : null,
                               labelText: 'password',
                               labelStyle:
                                   TextStyle(color: CupertinoColors.black),
@@ -231,6 +250,9 @@ class _SignupState extends State<Signup> {
                                     textAlignVertical: TextAlignVertical.center,
                                     decoration: InputDecoration(
                                       labelText: 'Channel Name',
+                                      errorText: _validatecname
+                                          ? 'Value Can\'t Be Empty'
+                                          : null,
                                       labelStyle: TextStyle(
                                           color: CupertinoColors.activeOrange,
                                           fontWeight: FontWeight.bold,
@@ -249,6 +271,9 @@ class _SignupState extends State<Signup> {
                                 controller: _descController,
                                 decoration: InputDecoration(
                                   labelText: 'Description',
+                                  errorText: _validatecdesc
+                                      ? 'Value Can\'t Be Empty'
+                                      : null,
                                   labelStyle: TextStyle(
                                       color: CupertinoColors.activeOrange,
                                       fontWeight: FontWeight.bold,
@@ -368,7 +393,10 @@ class _SignupState extends State<Signup> {
                             textAlign: TextAlign.justify,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              labelText: 'Weekly Viewers (optional)',
+                              labelText: 'Weekly Viewers',
+                              errorText: _validateweeklyviewers
+                                  ? 'Value Can\'t Be Empty'
+                                  : null,
                               labelStyle: TextStyle(
                                   color: CupertinoColors.activeOrange,
                                   fontWeight: FontWeight.bold,
@@ -381,6 +409,9 @@ class _SignupState extends State<Signup> {
                             textAlign: TextAlign.justify,
                             keyboardType: TextInputType.streetAddress,
                             decoration: InputDecoration(
+                              errorText: _validateaddress
+                                  ? 'Value Can\'t Be Empty'
+                                  : null,
                               labelText: 'Address',
                               labelStyle: TextStyle(
                                   color: CupertinoColors.activeOrange,
@@ -392,6 +423,31 @@ class _SignupState extends State<Signup> {
                             color: CupertinoColors.activeBlue,
                             child: Text("Create Account"),
                             onPressed: () async {
+                              setState(() {
+                                _nameController.text.isEmpty
+                                    ? _validatename = true
+                                    : _validatename = false;
+                                _emailController.text.isEmpty
+                                    ? _validateemail = true
+                                    : _validateemail = false;
+                                _passwordController.text.isEmpty
+                                    ? _validatepassword = true
+                                    : _validatepassword = false;
+                                _phoneController.text.isEmpty
+                                    ? _validatephone = true
+                                    : _validatephone = false;
+                                _channel_nameController.text.isEmpty
+                                    ? _validatecname = true
+                                    : _validatecname = false;
+                                _descController.text.isEmpty
+                                    ? _validatecdesc = true
+                                    : _validatecdesc = false;
+                                _addressController.text.isEmpty
+                                    ? _validateaddress = true
+                                    : _validateaddress = false;
+                                _weeklyviewers.text.isEmpty? _validateweeklyviewers=true: _validateweeklyviewers=false;
+                              });
+
                               await auth.createUserWithEmailAndPassword(
                                   email: _emailController.text,
                                   password: _passwordController.text);

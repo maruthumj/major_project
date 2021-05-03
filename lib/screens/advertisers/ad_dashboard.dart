@@ -24,7 +24,7 @@ class _dashboardState extends State<dashboard> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 2,
       initialIndex: 0,
       child: Scaffold(
         backgroundColor: CupertinoColors.extraLightBackgroundGray,
@@ -44,9 +44,9 @@ class _dashboardState extends State<dashboard> {
               Tab(
                 text: "Featured Ad",
               ),
-              Tab(
+              /*  Tab(
                 text: "Auction Ad",
-              ),
+              ),*/
             ],
           ),
         ),
@@ -54,7 +54,7 @@ class _dashboardState extends State<dashboard> {
           children: [
             dashboard_normal_ad(),
             dashboard_featured_ad(),
-            dashboard_auction_ad(),
+            //dashboard_auction_ad(),
           ],
         ),
       ),

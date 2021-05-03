@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:ui';
 import 'dart:io';
+import 'package:url_launcher/url_launcher.dart';
 
 class dashboard_auction_ad extends StatefulWidget {
   dashboard_auction_ad({Key key}) : super(key: key);
@@ -60,6 +61,14 @@ class _dashboard_auction_adState extends State<dashboard_auction_ad> {
         print(channel_name);
       });
     });
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Future getadrequest() async {
@@ -263,8 +272,11 @@ class _dashboard_auction_adState extends State<dashboard_auction_ad> {
                               height: 5,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
+                                SizedBox(
+                                  width: 50,
+                                ),
                                 Container(
                                   child: Text(
                                     "Play Video",
@@ -285,6 +297,28 @@ class _dashboard_auction_adState extends State<dashboard_auction_ad> {
                                         MaterialPageRoute(
                                             builder: (context) => video_play(
                                                 value: data['link'])));
+                                  },
+                                ),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                Container(
+                                  child: Text(
+                                    "Download Video",
+                                    style: TextStyle(
+                                        color: CupertinoColors.activeBlue),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                IconButton(
+                                  color: CupertinoColors.activeBlue,
+                                  icon: Icon(
+                                    CupertinoIcons.arrow_down_circle_fill,
+                                  ),
+                                  onPressed: () async {
+                                    await _launchURL(data['link']);
                                   },
                                 ),
                               ],

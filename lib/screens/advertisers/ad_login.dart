@@ -1,7 +1,6 @@
 //import 'dart:ui';
 
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:major_project/screens/advertisers/ad_Signup.dart';
@@ -24,7 +23,7 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _passwordController = new TextEditingController();
   TextEditingController _resetpasswordController = new TextEditingController();
-
+  bool _validateemail = false, _validatepassword = false;
   @override
   Widget build(BuildContext context) {
     FirebaseAuth fauth = FirebaseAuth.instance;
@@ -76,7 +75,11 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
                       children: [
                         TextFormField(
                           controller: _emailController,
-                          decoration: InputDecoration(labelText: "Email"),
+                          decoration: InputDecoration(
+                            labelText: "Email",
+                            errorText:
+                                _validateemail ? 'Value Can\'t Be Empty' : null,
+                          ),
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value.isEmpty) {
@@ -86,7 +89,12 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
                           },
                         ),
                         TextFormField(
-                          decoration: InputDecoration(labelText: 'password'),
+                          decoration: InputDecoration(
+                            labelText: 'password',
+                            errorText: _validatepassword
+                                ? 'Value Can\'t Be Empty'
+                                : null,
+                          ),
                           obscureText: true,
                           controller: _passwordController,
                           validator: (value) {
@@ -103,6 +111,14 @@ class _ad_LoginScreenState extends State<ad_LoginScreen> {
                           ),
                           color: CupertinoColors.activeBlue,
                           onPressed: () async {
+                            setState(() {
+                              _emailController.text.isEmpty
+                                  ? _validateemail = true
+                                  : _validateemail = false;
+                              _passwordController.text.isEmpty
+                                  ? _validatepassword = true
+                                  : _validatepassword = false;
+                            });
                             FirebaseAuth.instance.signInWithEmailAndPassword(
                                 email: _emailController.text,
                                 password: _passwordController.text);
