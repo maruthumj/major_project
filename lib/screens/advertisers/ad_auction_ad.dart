@@ -59,10 +59,11 @@ class _ad_auction_adState extends State<ad_auction_ad> {
   void initState() {
     super.initState();
     this.getchannelname();
-    this.getimage();
+    // this.getimage();
     this.getadvertiserdeatils();
   }
 
+//advertisers details
   Future<void> getadvertiserdeatils() async {
     User fuser = fauth.currentUser;
     final _uid = fuser.uid;
@@ -75,6 +76,7 @@ class _ad_auction_adState extends State<ad_auction_ad> {
     });
   }
 
+//getting channel name
   Future<void> getchannelname() async {
     QuerySnapshot queryshot = await fstore
         .collection("Auction ads")
@@ -87,10 +89,6 @@ class _ad_auction_adState extends State<ad_auction_ad> {
         print(imageLink);
       });
     });
-  }
-
-  Future<void> getimage() async {
-    String imageLink = '';
   }
 
   Future getfeaturedads() async {

@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:ui';
 import 'dart:io';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class dashboard_featured_ad_approved extends StatefulWidget {
   dashboard_featured_ad_approved({Key key}) : super(key: key);
@@ -27,6 +28,7 @@ class _dashboard_featured_ad_approvedState
     extends State<dashboard_featured_ad_approved> {
   bool visibility;
   int price1, ads;
+  Razorpay _razorpay;
   int total;
   FirebaseAuth fauth = FirebaseAuth.instance;
   String timestamp;
@@ -49,9 +51,30 @@ class _dashboard_featured_ad_approvedState
   @override
   void initState() {
     super.initState();
-
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     this.getadvertiseremail();
     this.getapprovalrequest();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    // Do something when payment succeeds
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    // Do something when payment fails
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    // Do something when an external wallet is selected
   }
 
   Future<void> getadvertiseremail() async {
@@ -70,6 +93,18 @@ class _dashboard_featured_ad_approvedState
         .get();
 
     return qs.docs;
+  }
+
+  payment() {
+    var options = {
+      'key': 'rzp_test_IG9DI7PJiaZnWD',
+      'amount': 50000, //in the smallest currency sub-unit.
+      'name': 'Make Jet',
+
+      'description': 'Featured ad', 'timeout': 60, // in seconds
+      'prefill': {'contact': '9952262291', 'email': 'makejetapps@gmail.com'}
+    };
+    _razorpay.open(options);
   }
 
   @override
@@ -188,9 +223,7 @@ class _dashboard_featured_ad_approvedState
                                       actions: [
                                         CupertinoDialogAction(
                                             child: Text("pay"),
-                                            onPressed: () async {
-                                              Navigator.pop(context, false);
-                                            }),
+                                            onPressed: payment),
                                         CupertinoDialogAction(
                                           child: Text(
                                             "Cancel",

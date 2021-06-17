@@ -35,6 +35,15 @@ class _normal_adState extends State<normal_ad> {
   List maximum_ads = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
   String valueChooser, valueChooser2, valueChooser3, valueChooser4;
   int max_ad_chooser;
+  bool _validatepricepersecond = false,
+      _validate_timeline = false,
+      _validate_starting_time = false,
+      _validate_ending_time = false,
+      _validate_minimum_ad_length = false,
+      _validate_maximum_ads_per_user = false,
+      _validate_ad_slots = false,
+      _validate_timeline_starting_time = false,
+      _validate_timeline_ending_time = false;
 
   FirebaseAuth fauth = FirebaseAuth.instance;
   FirebaseFirestore fstore = FirebaseFirestore.instance;
@@ -149,9 +158,15 @@ class _normal_adState extends State<normal_ad> {
                   children: [
                     Container(
                       width: 200,
-                      child: CupertinoTextField(
-                        placeholder: "Starting Time",
+                      child: TextFormField(
                         controller: _startingtimeController1,
+                        decoration: InputDecoration(
+                            errorText: _validate_timeline_starting_time
+                                ? 'Value Can\'t Be Empty'
+                                : null,
+                            labelText: 'Starting Time',
+                            labelStyle:
+                                TextStyle(color: CupertinoColors.black)),
                         keyboardType: TextInputType.datetime,
                       ),
                     ),
@@ -184,12 +199,19 @@ class _normal_adState extends State<normal_ad> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
-                        width: 200,
-                        child: CupertinoTextField(
-                          placeholder: "End Time",
-                          controller: _endtimeController1,
-                          keyboardType: TextInputType.datetime,
-                        )),
+                      width: 200,
+                      child: TextFormField(
+                        controller: _endtimeController1,
+                        decoration: InputDecoration(
+                            errorText: _validate_timeline_ending_time
+                                ? 'Value Can\'t Be Empty'
+                                : null,
+                            labelText: 'End Time',
+                            labelStyle:
+                                TextStyle(color: CupertinoColors.black)),
+                        keyboardType: TextInputType.datetime,
+                      ),
+                    ),
                     SizedBox(
                       width: 30,
                     ),
@@ -232,9 +254,15 @@ class _normal_adState extends State<normal_ad> {
                   children: [
                     Container(
                       width: 200,
-                      child: CupertinoTextField(
-                        placeholder: "Starting Time",
+                      child: TextFormField(
                         controller: _breakstartingtimeController1,
+                        decoration: InputDecoration(
+                            errorText: _validate_starting_time
+                                ? 'Value Can\'t Be Empty'
+                                : null,
+                            labelText: 'Starting Time',
+                            labelStyle:
+                                TextStyle(color: CupertinoColors.black)),
                         keyboardType: TextInputType.datetime,
                       ),
                     ),
@@ -268,9 +296,16 @@ class _normal_adState extends State<normal_ad> {
                   children: [
                     Container(
                       width: 200,
-                      child: CupertinoTextField(
-                        placeholder: "End Time",
+                      child: TextFormField(
                         controller: _breakendtimeController1,
+                        decoration: InputDecoration(
+                            errorText: _validate_ending_time
+                                ? 'Value Can\'t Be Empty'
+                                : null,
+                            labelText: 'End Time',
+                            labelStyle:
+                                TextStyle(color: CupertinoColors.black)),
+                        keyboardType: TextInputType.datetime,
                       ),
                     ),
                     SizedBox(
@@ -305,10 +340,16 @@ class _normal_adState extends State<normal_ad> {
                     children: [
                       Container(
                         width: 250,
-                        child: CupertinoTextField(
-                          placeholder: "Ad Slots",
-                          keyboardType: TextInputType.number,
+                        child: TextFormField(
                           controller: _adslotsController,
+                          decoration: InputDecoration(
+                              errorText: _validate_ad_slots
+                                  ? 'Value Can\'t Be Empty'
+                                  : null,
+                              labelText: 'Ad slots',
+                              labelStyle:
+                                  TextStyle(color: CupertinoColors.black)),
+                          keyboardType: TextInputType.number,
                         ),
                       ),
                     ],
@@ -324,10 +365,16 @@ class _normal_adState extends State<normal_ad> {
                     children: [
                       Container(
                         width: 250,
-                        child: CupertinoTextField(
-                          placeholder: "Minimum ad Video Length",
-                          keyboardType: TextInputType.text,
+                        child: TextFormField(
                           controller: _minimumadlengthController,
+                          decoration: InputDecoration(
+                              errorText: _validate_minimum_ad_length
+                                  ? 'Value Can\'t Be Empty'
+                                  : null,
+                              labelText: 'Minimum ad video length',
+                              labelStyle:
+                                  TextStyle(color: CupertinoColors.black)),
+                          keyboardType: TextInputType.number,
                         ),
                       ),
                     ],
@@ -387,10 +434,16 @@ class _normal_adState extends State<normal_ad> {
                     children: [
                       Container(
                         width: 250,
-                        child: CupertinoTextField(
-                          placeholder: "Price per second",
-                          keyboardType: TextInputType.number,
+                        child: TextFormField(
                           controller: _pricepersecondController1,
+                          decoration: InputDecoration(
+                              errorText: _validatepricepersecond
+                                  ? 'Value Can\'t Be Empty'
+                                  : null,
+                              labelText: 'Price per second',
+                              labelStyle:
+                                  TextStyle(color: CupertinoColors.black)),
+                          keyboardType: TextInputType.number,
                         ),
                       ),
                     ],
